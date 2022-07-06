@@ -1,0 +1,12 @@
+#range(1,200)
+a=range(1,200)
+for i in a:
+    print i*5
+    value1=sum(a*5)
+
+b=range(1,334)
+for i in b:
+    print i*3
+    value2=sum(b*3)
+
+print value1+value2

@@ -1,0 +1,6 @@
+a, b = 0, 1
+for i in range(0,10000):
+    #print(a)
+    a, b = b, a+b
+    if a % 1 == 0:
+        print(a)

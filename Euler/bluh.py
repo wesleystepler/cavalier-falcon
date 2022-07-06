@@ -1,0 +1,8 @@
+def formalCharge(v,b,nb): #A funciton that takes as its input the valence electrons of a neutral atom, 
+#The number of atoms that bond when it's in a molecule, and the number of atoms that don't bond in a molecule
+    return v - (nb + (float(b)/2))
+
+
+
+
+print(formalCharge(5,6,2))

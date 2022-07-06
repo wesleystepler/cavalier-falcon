@@ -1,0 +1,16 @@
+import math
+
+def f(x):
+  return x**2 - 1
+
+def g(x):
+  return math.sqrt(x + 1)
+
+def h(x):
+  return x - 1
+
+for i in range(1,20):
+  print
+  print
+  print "i: %s, f: %s, g: %s, h: %s" % (i, f(i), g(i), h(i))
+  print "f(g(x)): %s, g(f(x)): %s" % (f(g(i)), (g(f(i)))
