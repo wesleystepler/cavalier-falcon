@@ -217,15 +217,17 @@ rf = [Card("K", "H"), Card("A", "D"), Card("T", "D"), Card("J", "D"), Card("Q", 
 #print(is_royal_flush(rf))
 
 def tie_breaker(hand1, hand2, tied_on):
-    h1_one, h2_one = get_one_pair(hand1), get_one_pair(hand2)
-    h1_two, h2_two = get_two_pair(hand1), get_two_pair(hand2)
-    h1_three, h2_three = get_three_of_a_kind(hand1), get_three_of_a_kind(hand2)
-    h1_four, h2_four = get_four_of_a_kind(hand1), get_four_of_a_kind(hand2)
+    h1_op, h2_op = get_one_pair(hand1), get_one_pair(hand2)
+    h1_tp, h2_tp = get_two_pair(hand1), get_two_pair(hand2)
+    h1_tk, h2_tk = get_three_of_a_kind(hand1), get_three_of_a_kind(hand2)
+    h1_fk, h2_fk = get_four_of_a_kind(hand1), get_four_of_a_kind(hand2)
 
     if tied_on == "High Card":
         hand1.sort()
         hand2.sort()
+        # We only care about cards 1 - 4, since we know the high cards are the same
         i = 3
+        # Go down the line until you get a card that's greater
         while i >= 0:
             if hand1[i] > hand2[i]:
                 print("Player 1 Wins the High Card Tie Breaker!")
@@ -242,23 +244,23 @@ def tie_breaker(hand1, hand2, tied_on):
         return None
 
     elif tied_on == "One Pair":
-        if max(h1_one) > max(h1_two):
+        if max(h1_op) > max(h2_op):
             print("Player 1 Wins on a Higher Pair!")
             return hand1
         
-        elif max(h2_one) > max(h1_one):
+        elif max(h2_op) > max(h1_op):
             print("Player 2 Wins on a Higher Pair!")
             return hand2
 
         else:
             h1 = []
             for card in hand1:
-                if card not in h1_one:
+                if card not in h1_op:
                     h1.append(card)
 
             h2 = []
             for card in hand2:
-                if card not in h2_one:
+                if card not in h2_op:
                     h2.append(card)
 
             h1.sort()
@@ -280,35 +282,36 @@ def tie_breaker(hand1, hand2, tied_on):
 
 
     elif tied_on == "Two Pair":
-        if max(h1_two) > max(h2_two):
+        if max(h1_tp) > max(h2_tp):
             print("Player 1 Wins with the Higher Pair!")
             return hand1
 
-        elif max(h2_two) > max(h1_two):
+        elif max(h2_tp) > max(h1_tp):
             print("Player 2 Wins with the Higher Pair!")
             return hand2
 
-        elif min(h1_two) > min(h2_two):
+        elif min(h1_tp) > min(h2_tp):
             print("Player 1 Wins with the Higher Pair!")
             return hand1
 
-        elif min(h2_two) > min(h1_two):
-            print("Player 1 Wins with the Higher Pair!")
+        elif min(h2_tp) > min(h1_tp):
+            print("Player 2 Wins with the Higher Pair!")
+            return hand2
 
         else:
             h1 = []
             for card in hand1:
-                if card not in h1_one:
+                if card not in h1_tp:
                     h1.append(card)
 
             h2 = []
             for card in hand2:
-                if card not in h2_one:
+                if card not in h2_tp:
                     h2.append(card)
 
             h1.sort()
             h2.sort()
-            i = len(h1)
+            i = len(h1)-1
             while i >= 0:
                 if h1[i] > h2[i]:
                     print("Player 1 Wins on the Pair Tie-Breaker!")
@@ -320,16 +323,16 @@ def tie_breaker(hand1, hand2, tied_on):
 
                 else:
                     i -= 1
-            print("It's a Tie!")
+            print("It's a Tie! Split the Pot!")
             return None
 
 
     elif tied_on == "Three of a Kind":
-        if max(h1_three) > max(h2_three):
+        if max(h1_tk) > max(h2_tk):
             print("Player 1 Wins on the Higher Set of Three!")
             return hand1
 
-        elif max(h2_three) > max(h1_three):
+        elif max(h2_tk) > max(h1_tk):
             print("Player 2 Wins on the Higher Set of Three!")
             return hand2
 
@@ -362,14 +365,14 @@ def tie_breaker(hand1, hand2, tied_on):
             hand2.remove(max(hand2))
             hand1.sort()
             hand2.sort()
-            i = len(hand1)
+            i = len(hand1)-1
             while i >= 0:
                 if hand1[i] > hand2[i]:
-                    print("Player 1 Wins on the Pair Tie-Breaker!")
+                    print("Player 1 Wins on the Flush Tie-Breaker!")
                     return hand1
 
                 elif hand2[i] > hand1[i]:
-                    print("Player 2 Wins on the Pair Tie-Breaker!")
+                    print("Player 2 Wins on the Flush Tie-Breaker!")
                     return hand2
 
                 else:
@@ -379,21 +382,21 @@ def tie_breaker(hand1, hand2, tied_on):
 
 
     elif tied_on == "Full House":
-        if max(h1_three) > max(h2_three):
+        if max(h1_tk) > max(h2_tk):
             print("Player 1 Wins with a Higher Set of Three!")
             return hand1
         
-        elif max(h2_three) > max(h1_three):
+        elif max(h2_tk) > max(h1_tk):
             print("Player 2 Wins with a Higher Set of Three!")
             return hand2
 
     
     elif tied_on == "Four of a Kind":
-        if max(h1_four) > max(h2_four):
+        if max(h1_fk) > max(h2_fk):
             print("Player 1 Wins with a Higher Set of Four!")
             return hand1
 
-        elif max(h2_four) > max(h1_four):
+        elif max(h2_fk) > max(h1_fk):
             print("Player 2 Wins with a Higher Set of Four!")
             return hand2
 
@@ -401,10 +404,10 @@ def tie_breaker(hand1, hand2, tied_on):
     return None
 
 def determine_winner(hand1, hand2):
-    h1_one, h2_one = get_one_pair(hand1), get_one_pair(hand2)
-    h1_two, h2_two = get_two_pair(hand1), get_two_pair(hand2)
-    h1_three, h2_three = get_three_of_a_kind(hand1), get_three_of_a_kind(hand2)
-    h1_four, h2_four = get_four_of_a_kind(hand1), get_four_of_a_kind(hand2)
+    h1_op, h2_op = get_one_pair(hand1), get_one_pair(hand2)
+    h1_tp, h2_tp = get_two_pair(hand1), get_two_pair(hand2)
+    h1_tk, h2_tk = get_three_of_a_kind(hand1), get_three_of_a_kind(hand2)
+    h1_fk, h2_fk = get_four_of_a_kind(hand1), get_four_of_a_kind(hand2)
 
 
     if is_royal_flush(hand1) or is_royal_flush(hand2):
@@ -418,6 +421,7 @@ def determine_winner(hand1, hand2):
 
         else:
             print("Holy Heck!! TWO ROYAL FLUSHES! Split the Pot!!!")
+            return None
 
     elif is_straight_flush(hand1) or is_straight_flush(hand2):
         if not is_straight_flush(hand2):
@@ -426,15 +430,15 @@ def determine_winner(hand1, hand2):
 
         elif not is_straight_flush(hand1):
             print("Player 2 Wins on a Straight Flush!")
-            return hand1
+            return hand2
 
         else:
             return tie_breaker(hand1, hand2, "Straight Flush")
 
-    elif is_four_of_a_kind(h1_four) or is_four_of_a_kind(h2_four):
+    elif is_four_of_a_kind(h1_fk) or is_four_of_a_kind(h2_fk):
         if not is_four_of_a_kind(get_four_of_a_kind(hand2)):
             print("Player 1 Wins on Four of a Kind!")
-            return hand2
+            return hand1
         
         elif not is_four_of_a_kind(get_four_of_a_kind(hand1)):
             print("Player 2 Wins on Four of a Kind!")
@@ -450,7 +454,7 @@ def determine_winner(hand1, hand2):
 
         elif not is_full_house(hand1):
             print("Player 2 Wins on a Full House!")
-
+            return hand2
         else:
             return tie_breaker(hand1, hand2, "Full House")
 
@@ -478,12 +482,12 @@ def determine_winner(hand1, hand2):
         else:
             return tie_breaker(hand1, hand2, "Straight")
 
-    elif is_three_of_a_kind(h1_three) or is_three_of_a_kind(h2_three):
-        if not is_three_of_a_kind(h2_three):
+    elif is_three_of_a_kind(h1_tk) or is_three_of_a_kind(h2_tk):
+        if not is_three_of_a_kind(h2_tk):
             print("Player 1 Wins on Three of a Kind!")
             return hand1
 
-        elif not is_three_of_a_kind(h1_three):
+        elif not is_three_of_a_kind(h1_tk):
             print("Player 2 Wins on Three of a Kind!")
             return hand2
 
@@ -491,24 +495,24 @@ def determine_winner(hand1, hand2):
             return tie_breaker(hand1, hand2, "Three of a Kind")
 
 
-    elif is_two_pair(h1_two) or is_two_pair(h2_two):
-        if not is_two_pair(h2_two):
+    elif is_two_pair(h1_tp) or is_two_pair(h2_tp):
+        if not is_two_pair(h2_tp):
             print("Player 1 Wins on a Two Pair!")
             return hand1
 
-        elif not is_two_pair(h1_two):
+        elif not is_two_pair(h1_tp):
             print("Player 2 Wins on a Two Pair!")
             return hand2
 
         else:
             return tie_breaker(hand1, hand2, "Two Pair")
 
-    elif is_one_pair(h1_one) or is_one_pair(h1_two):
-        if not is_one_pair(h2_one):
+    elif is_one_pair(h1_op) or is_one_pair(h1_tp):
+        if not is_one_pair(h2_op):
             print("Player 1 Wins on a Pair!")
             return hand1
 
-        elif not is_one_pair(h1_one):
+        elif not is_one_pair(h1_op):
             print("Player 2 Wins on a Pair!")
             return hand2
 
@@ -537,12 +541,12 @@ print_hands(player_hands)
 #    print(card)
 
 
-determine_winner(player_hands[0], player_hands[1])   
+#determine_winner(player_hands[0], player_hands[1])   
 
+
+# Rest of this code is specifically for Project Euler #54
 with open("poker.txt") as f:
     poker_hands = f.readlines()
-
-
 
 p1_hands = []
 p2_hands = []
@@ -589,6 +593,7 @@ for hand in p2_hands:
 p1_wins = 0
 games_played = 0
 for i in range(0, len(p1_card_hands)):
+    print(f"Game {games_played}")
     winner = determine_winner(p1_card_hands[i], p2_card_hands[i])
     if winner == p1_card_hands[i]:
         p1_wins += 1
@@ -596,6 +601,9 @@ for i in range(0, len(p1_card_hands)):
 
 print(p1_wins)
 print(games_played)
+
+#for i in range(0, len(p1_card_hands)):
+#   print(p1_card_hands[i], p2_card_hands[i])
 
 
 
