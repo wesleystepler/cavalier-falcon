@@ -135,9 +135,9 @@ def is_straight(hand):
     return straight
     
 
-straight1 = [Card("8", "H"), Card("6", "C"), Card("10", "D"), Card("7", "S"), Card("9", "H")]
-straight2 = [Card("J", "D"), Card("A", "H"), Card("K", "S"), Card("10", "C"), Card("Q", "D")]
-straight3 = [Card("5", "D"), Card("A", "H"), Card("7", "S"), Card("10", "C"), Card("Q", "D")]
+straight1 = [Card("8", "H"), Card("6", "C"), Card("T", "D"), Card("7", "S"), Card("9", "H")]
+straight2 = [Card("J", "D"), Card("A", "H"), Card("K", "S"), Card("T", "C"), Card("Q", "D")]
+straight3 = [Card("5", "D"), Card("A", "H"), Card("7", "S"), Card("T", "C"), Card("Q", "D")]
 #print(is_straight(straight1))
 
 def is_flush(hand):
@@ -152,9 +152,9 @@ def is_flush(hand):
 
 
 
-flush1 = [Card("5", "H"), Card("10", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
+flush1 = [Card("5", "H"), Card("T", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
 flush2 = [Card("4", "C"), Card("7", "C"), Card("K", "C"), Card("J", "C"), Card("9", "C")]
-flush3 = [Card("5", "H"), Card("10", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
+flush3 = [Card("5", "H"), Card("T", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
 
 #print(is_flush(flush1))
 
@@ -169,7 +169,7 @@ def is_full_house(hand):
     else:
         return False
 
-fhouse = [Card("3", "D"), Card("K", "D"), Card("10", "H"), Card("K", "S"), Card("K", "C")]
+fhouse = [Card("3", "D"), Card("K", "D"), Card("T", "H"), Card("K", "S"), Card("K", "C")]
 #print(is_full_house(fhouse))
 
 def get_four_of_a_kind(hand):
@@ -191,7 +191,7 @@ def is_four_of_a_kind(cards):
     else:
         return False
 
-four1 = [Card("7", "H"), Card("10", "D"), Card("8", "S"), Card("7", "C"), Card("7", "D")]
+four1 = [Card("7", "H"), Card("T", "D"), Card("8", "S"), Card("7", "C"), Card("7", "D")]
 #print(is_four_of_a_kind((get_four_of_a_kind(four1))))
 
 def is_straight_flush(hand):
@@ -200,20 +200,20 @@ def is_straight_flush(hand):
     else:
         return False
 
-sf = [Card("5", "S"), Card("6", "S"), Card("10", "S"), Card("8", "S"), Card("9", "S")]
+sf = [Card("5", "S"), Card("6", "S"), Card("T", "S"), Card("8", "S"), Card("9", "S")]
 #print(is_straight_flush(sf))
 
 def is_royal_flush(hand):
     if is_straight_flush(hand):
         hand.sort()
-        if min(hand).rank == "10":
+        if min(hand).rank == "T":
             return True
         else:
             return False
     else:
         return False
 
-rf = [Card("K", "H"), Card("A", "D"), Card("10", "D"), Card("J", "D"), Card("Q", "D")]
+rf = [Card("K", "H"), Card("A", "D"), Card("T", "D"), Card("J", "D"), Card("Q", "D")]
 #print(is_royal_flush(rf))
 
 def tie_breaker(hand1, hand2, tied_on):
@@ -236,7 +236,7 @@ def tie_breaker(hand1, hand2, tied_on):
                 return hand2
 
             else:
-                i += 1
+                i -= 1
 
         print("It's a Tie! Split the Pot!")
         return None
@@ -523,11 +523,11 @@ def determine_winner(hand1, hand2):
         else:
            return tie_breaker(hand1, hand2, "High Card")
 
-rf = [Card("K", "D"), Card("A", "D"), Card("10", "D"), Card("J", "D"), Card("Q", "D")]
-sf = [Card("7", "S"), Card("6", "S"), Card("10", "S"), Card("8", "S"), Card("9", "S")]
-four1 = [Card("7", "H"), Card("10", "D"), Card("7", "S"), Card("7", "C"), Card("7", "D")]
-straight1 = [Card("8", "H"), Card("6", "C"), Card("10", "D"), Card("7", "S"), Card("9", "H")]
-flush1 = [Card("5", "H"), Card("10", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
+rf = [Card("K", "D"), Card("A", "D"), Card("T", "D"), Card("J", "D"), Card("Q", "D")]
+sf = [Card("7", "S"), Card("6", "S"), Card("T", "S"), Card("8", "S"), Card("9", "S")]
+four1 = [Card("7", "H"), Card("T", "D"), Card("7", "S"), Card("7", "C"), Card("7", "D")]
+straight1 = [Card("8", "H"), Card("6", "C"), Card("T", "D"), Card("7", "S"), Card("9", "H")]
+flush1 = [Card("5", "H"), Card("T", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
 
 player_hands = deal(deck, 2, 5)
 print_hands(player_hands)
@@ -537,16 +537,66 @@ print_hands(player_hands)
 #    print(card)
 
 
-#determine_winner(player_hands[0], player_hands[1])   
+determine_winner(player_hands[0], player_hands[1])   
 
 with open("poker.txt") as f:
     poker_hands = f.readlines()
 
+
+
 p1_hands = []
 p2_hands = []
 for hand in poker_hands:
-    p1_hands.append(hand.split(' ',maxsplit=1)[0])
-    p2_hands.append(hand.split(' ', maxsplit=1)[1])
+    hand = hand.replace("\n", "")
+    cards = hand.split(" ")
+    #print(cards)
+    hand1 = []
+    for i in range(0,5):
+        hand1.append(cards[i])
+    p1_hands.append(hand1)
+    
+    hand2 = []
+    for i in range(5, 10):
+        hand2.append(cards[i])
+    p2_hands.append(hand2)
 
+hand1 = p1_hands[0]
+hand2 = p2_hands[0]
+
+p1_card_hands = []
 for hand in p1_hands:
-    print(hand)
+    cards = []
+    for card in hand:
+        rank = card[0]
+        suit = card[1]
+        #print(rank, suit)
+        new_card = Card(rank, suit)
+        cards.append(new_card)
+    p1_card_hands.append(cards)
+
+p2_card_hands = []
+for hand in p2_hands:
+    cards = []
+    for card in hand:
+        rank = card[0]
+        suit = card[1]
+        #print(rank, suit)
+        new_card = Card(rank, suit)
+        cards.append(new_card)
+    p2_card_hands.append(cards)
+
+
+p1_wins = 0
+games_played = 0
+for i in range(0, len(p1_card_hands)):
+    winner = determine_winner(p1_card_hands[i], p2_card_hands[i])
+    if winner == p1_card_hands[i]:
+        p1_wins += 1
+    games_played += 1
+
+print(p1_wins)
+print(games_played)
+
+
+
+

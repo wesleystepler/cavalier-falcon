@@ -6,7 +6,7 @@ class Card:
     """Constructor (Default or Overloaded)"""
     def __init__(self, rank=None, suit=None):
         import random
-        self.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        self.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
         self.suits = ["H", "D", "S", "C"]
         if rank and suit:
             if rank in self.ranks:
@@ -33,6 +33,9 @@ class Card:
             self.suit_name = "Clubs"
 
         self.rank_name = ""
+        if self.rank == "T":
+            self.rank_name == "Ten"
+            
         if self.rank == "J":
             self.rank_name = "Jack"
 
@@ -49,7 +52,7 @@ class Card:
             self.rank_name = self.rank
 
     def __gt__(self, other):
-        order = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        order = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
         c1 = order.index(self.rank)
         c2 = order.index(other.rank)
         if c1 > c2:
@@ -58,7 +61,7 @@ class Card:
             return False
 
     def __lt__(self, other):
-        order = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        order = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
         c1 = order.index(self.rank)
         c2 = order.index(other.rank)
         if c1 < c2:
@@ -67,7 +70,7 @@ class Card:
             return False
 
     def __eq__(self, other):
-        order = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        order = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
         c1 = order.index(self.rank)
         c2 = order.index(other.rank)
         if c1 == c2:
@@ -76,7 +79,7 @@ class Card:
             return False
 
     def __ge__(self, other):
-        order = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        order = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
         c1 = order.index(self.rank)
         c2 = order.index(other.rank)
         if c1 >= c2:
@@ -85,7 +88,7 @@ class Card:
             return False
 
     def __le__(self, other):
-        order = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        order = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
         c1 = order.index(self.rank)
         c2 = order.index(other.rank)
         if c1 <= c2:
