@@ -6,21 +6,21 @@ class Card:
     """Constructor (Default or Overloaded)"""
     def __init__(self, rank=None, suit=None):
         import random
-        ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-        suits = ["H", "D", "S", "C"]
+        self.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+        self.suits = ["H", "D", "S", "C"]
         if rank and suit:
-            if rank in ranks:
+            if rank in self.ranks:
                 self.rank = rank
             else:
                 raise Exception("Invalid Rank")
             
-            if suit in suits:
+            if suit in self.suits:
                 self.suit = suit
             else:
                 raise Exception("Invalid Suit")
         else:
-            self.rank = random.choice(ranks)
-            self.suit = random.choice(suits)
+            self.rank = random.choice(self.ranks)
+            self.suit = random.choice(self.suits)
         
         self.suit_name = ""
         if self.suit == "H":
