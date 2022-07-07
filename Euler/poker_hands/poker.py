@@ -164,14 +164,16 @@ flush3 = [Card("5", "H"), Card("10", "H"), Card("A", "H"), Card("2", "H"), Card(
 def is_full_house(hand):
     toak = get_three_of_a_kind(hand)
     op = get_one_pair(hand)
-    print(get_three_of_a_kind(hand), get_one_pair(hand))
+    for card in toak:
+        if card in op:
+            op.remove(card)
     if is_three_of_a_kind(toak) and is_one_pair(op):
         return True
     else:
         return False
 
-fhouse = [Card("10", "D"), Card("K", "D"), Card("4", "H"), Card("K", "S"), Card("K", "C")]
-print(is_full_house(fhouse))
+fhouse = [Card("3", "D"), Card("K", "D"), Card("10", "H"), Card("K", "S"), Card("K", "C")]
+#print(is_full_house(fhouse))
 
 def get_four_of_a_kind(hand):
     ranks = []
@@ -194,6 +196,28 @@ def is_four_of_a_kind(cards):
 
 four1 = [Card("7", "H"), Card("10", "D"), Card("8", "S"), Card("7", "C"), Card("7", "D")]
 #print(is_four_of_a_kind((get_four_of_a_kind(four1))))
+
+def is_straight_flush(hand):
+    if is_straight(hand) and is_flush(hand):
+        return True
+    else:
+        return False
+
+sf = [Card("5", "S"), Card("6", "S"), Card("10", "S"), Card("8", "S"), Card("9", "S")]
+#print(is_straight_flush(sf))
+
+def is_royal_flush(hand):
+    if is_straight_flush(hand):
+        hand.sort()
+        if min(hand).rank == "10":
+            return True
+        else:
+            return False
+    else:
+        return False
+
+rf = [Card("K", "H"), Card("A", "D"), Card("10", "D"), Card("J", "D"), Card("Q", "D")]
+#print(is_royal_flush(rf))
 
 
 
