@@ -48,7 +48,7 @@ def get_one_pair(hand):
     for card in hand:
         ranks.append(card.rank)
     
-    pairs = [rank for rank in ranks if ranks.count(rank) > 1]
+    pairs = [rank for rank in ranks if ranks.count(rank) > 1 and ranks.count(rank) < 3]
 
     # Narrow the list down to just one pair, and make sure it's the highest pair they have
 
@@ -118,7 +118,7 @@ def is_three_of_a_kind(cards):
         return False
 
 
-three1 = [Card("4", "C"), Card("2", "H"), Card("A", "D"), Card("4", "S"), Card("6", "C")]
+three1 = [Card("4", "C"), Card("2", "H"), Card("4", "D"), Card("4", "S"), Card("6", "C")]
 three2 = [Card("7", "C"), Card("7", "S"), Card("K", "H"), Card("7", "D"), Card("9", "S")]
 
 #print(is_three_of_a_kind(get_three_of_a_kind(three1)))
@@ -169,7 +169,7 @@ def is_full_house(hand):
     else:
         return False
 
-fhouse = [Card("3", "D"), Card("K", "D"), Card("T", "H"), Card("K", "S"), Card("K", "C")]
+fhouse = [Card("3", "D"), Card("K", "D"), Card("3", "H"), Card("K", "S"), Card("K", "C")]
 #print(is_full_house(fhouse))
 
 def get_four_of_a_kind(hand):
@@ -253,6 +253,7 @@ def tie_breaker(hand1, hand2, tied_on):
             return hand2
 
         else:
+            # The highest card not in the pair wins 
             h1 = []
             for card in hand1:
                 if card not in h1_op:
@@ -357,7 +358,7 @@ def tie_breaker(hand1, hand2, tied_on):
             return hand1
 
         elif max(hand2) > max(hand1):
-            print("PLayer 2 Wins on the Higher Card!")
+            print("Player 2 Wins on the Higher Card!")
             return hand2
 
         else:
@@ -383,11 +384,11 @@ def tie_breaker(hand1, hand2, tied_on):
 
     elif tied_on == "Full House":
         if max(h1_tk) > max(h2_tk):
-            print("Player 1 Wins with a Higher Set of Three!")
+            print("Player 1 Wins the Full House Tie with a Higher Set of Three!")
             return hand1
         
         elif max(h2_tk) > max(h1_tk):
-            print("Player 2 Wins with a Higher Set of Three!")
+            print("Player 2 Wins the Full House Tie with a Higher Set of Three!")
             return hand2
 
     
@@ -507,7 +508,7 @@ def determine_winner(hand1, hand2):
         else:
             return tie_breaker(hand1, hand2, "Two Pair")
 
-    elif is_one_pair(h1_op) or is_one_pair(h1_tp):
+    elif is_one_pair(h1_op) or is_one_pair(h2_op):
         if not is_one_pair(h2_op):
             print("Player 1 Wins on a Pair!")
             return hand1
@@ -522,8 +523,11 @@ def determine_winner(hand1, hand2):
     else:
         if high_card(hand1) > high_card(hand2):
             print("Player 1 Wins on the High Card!")
+            return hand1
+
         elif high_card(hand2) > high_card(hand1):
             print("Player 2 Wins on the High Card!")
+            return hand2 
         else:
            return tie_breaker(hand1, hand2, "High Card")
 
@@ -533,8 +537,8 @@ four1 = [Card("7", "H"), Card("T", "D"), Card("7", "S"), Card("7", "C"), Card("7
 straight1 = [Card("8", "H"), Card("6", "C"), Card("T", "D"), Card("7", "S"), Card("9", "H")]
 flush1 = [Card("5", "H"), Card("T", "H"), Card("A", "H"), Card("2", "H"), Card("9", "H")]
 
-player_hands = deal(deck, 2, 5)
-print_hands(player_hands)
+#player_hands = deal(deck, 2, 5)
+#print_hands(player_hands)
 
 #for card in player_hands[0]:
 #    print(type(card))
@@ -590,21 +594,28 @@ for hand in p2_hands:
     p2_card_hands.append(cards)
 
 
+# Some hands to test functionality 
+hand1 = [Card("A", "C"), Card("J", "D"), Card("5", "H"), Card("9", "C"), Card("2", "C")]
+hand2 = [Card("2", "C"), Card("A", "S"), Card("K", "C"), Card("2", "D"), Card("3", "D")] 
+#print(hand1)
+#print(hand2) 
+#determine_winner(hand1, hand2)  
+
+
 p1_wins = 0
+p2_wins = 0
 games_played = 0
 for i in range(0, len(p1_card_hands)):
     print(f"Game {games_played}")
     winner = determine_winner(p1_card_hands[i], p2_card_hands[i])
     if winner == p1_card_hands[i]:
         p1_wins += 1
+    else:
+        p2_wins += 1
     games_played += 1
 
-print(p1_wins)
+print(p1_wins, p2_wins)
 print(games_played)
 
 #for i in range(0, len(p1_card_hands)):
-#   print(p1_card_hands[i], p2_card_hands[i])
-
-
-
-
+#    print(p1_card_hands[i], p2_card_hands[i])
