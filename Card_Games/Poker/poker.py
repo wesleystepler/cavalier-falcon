@@ -195,7 +195,7 @@ def reset_pot():
 def player_turn(player):
     if player == "Player 1":
         print("Player 1, it's your turn!")
-        print("Press 'B' to bet, or 'C' to check: ")
+        print("Press 'B' to bet, 'C' to check, or 'F' to fold: ")
         while True:
             turn = input()
             if turn == "B":
@@ -243,18 +243,26 @@ def player_turn(player):
                 print()
                 print("Player 1 chose to check!")
                 print()
+                time.sleep(1)
+                break
+
+            elif turn == "F":
+                print()
+                print("Player 1 chose to fold!")
+                print()
+                time.sleep(1)
                 break
 
             else:
                 print("Invalid Response! Please try again.")
-                print("Valid responses: 'B' to bet, or 'C' to check")
+                print("Valid responses: 'B' to bet, 'C' to check, or 'F' to fold.")
         print_screen()
 
 
     else:
         
         print("Player 2, it's your turn!")
-        print("Press 'B' to bet, or 'C' to check: ")
+        print("Press 'B' to bet, 'C' to check, or 'F' to fold: ")
         while True:
             turn = input()
             if turn == "B":
@@ -301,6 +309,14 @@ def player_turn(player):
             elif turn == "C":
                 print()
                 print("Player 2 chose to check!")
+                time.sleep(1)
+                print()
+                break
+
+            elif turn == "F":
+                print()
+                print("Player 2 chose to fold!")
+                time.sleep(1)
                 print()
                 break
 
@@ -308,6 +324,8 @@ def player_turn(player):
                 print("Invalid Response! Please try again.")
                 print("Valid responses: 'B' to bet, or 'C' to check")
         print_screen()
+
+    return turn
 
     
 
@@ -412,8 +430,11 @@ def play():
     round = 1
     if round % 2 != 0:
         print("First Round of Betting!")
-        player_turn("Player 1")
+        p1_turn = player_turn("Player 1")
+        if p1_turn == "B":
+            print("Player 2, you must bet or fold!")
         player_turn("Player 2")
+
         print("Second Round of Betting!")
         player_turn("Player 1")
         player_turn("Player 2")
@@ -425,7 +446,10 @@ def play():
         time.sleep(1)
         winner = poker_hands.determine_winner(P1_HAND, P2_HAND)
         time.sleep(3)
-        hand_winner(winner) 
+        if winner == P1_HAND:
+            hand_winner("Player 1")
+        else:
+            hand_winner("Player 2") 
         print_chip_total("Player 1")
         print_chip_total("Player 2")
 
