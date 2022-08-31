@@ -15,6 +15,7 @@ P1_TOTAL = 0
 P1_W = 0
 P1_R = 0
 P1_B = 0
+P1_BET = 0
 
 P2_HAND = []
 P2_CHIPS = []
@@ -22,6 +23,7 @@ P2_TOTAL = 0
 P2_W = 0
 P2_R = 0
 P2_B = 0
+P2_BET = 0
 
 W = Chip("W")
 R = Chip("R")
@@ -77,12 +79,10 @@ def default_chips():
 
 
 def update_chip_total(player):
-    global P1_CHIPS
     global P1_TOTAL
     global P1_W
     global P1_R
     global P1_B
-    global P2_CHIPS
     global P2_TOTAL
     global P2_W
     global P2_R
@@ -119,33 +119,11 @@ def update_chip_total(player):
     else:
         raise Exception("Invalid Player Entry")
    
-def print_chip_total(player):
-    """Not sure if I'm gonna use this or not. May be replaced with print_screen()"""
-    global P1_TOTAL
-    global P1_W
-    global P1_R
-    global P1_B
-    global P2_TOTAL
-    global P2_W
-    global P2_R
-    global P2_B
-
-    if player == "Player 1":
-        print(f"{player} Total Chips: ${P1_TOTAL}")
-        print(f"White Chips: {P1_W}")
-        print(f"Red Chips: {P1_R}")
-        print(f"Blue Chips: {P1_B}")
-
-    elif player == "Player 2":
-        print(f"{player} Total Chips: ${P2_TOTAL}")
-        print(f"White Chips: {P2_W}")
-        print(f"Red Chips: {P2_R}")
-        print(f"Blue Chips: {P2_B}")  
- 
-
 def bet(player, num_w, num_r, num_b):
     global P1_CHIPS
     global P2_CHIPS
+    global P1_BET
+    global P2_BET
     global POT
     global POT_TOTAL
 
@@ -164,7 +142,7 @@ def bet(player, num_w, num_r, num_b):
             P1_CHIPS.remove(B)
             POT.append(B)
             POT_TOTAL += B.value
-
+        P1_BET = POT_TOTAL
         update_chip_total(player)
 
     elif player == "Player 2":
@@ -182,7 +160,7 @@ def bet(player, num_w, num_r, num_b):
             P2_CHIPS.remove(B)
             POT.append(B)
             POT_TOTAL += B.value
-
+        P2_BET = POT_TOTAL
         update_chip_total(player)
 
 def reset_pot():
@@ -194,7 +172,8 @@ def reset_pot():
 
 def player_turn(player):
     if player == "Player 1":
-        print("Player 1, it's your turn!")
+        if P2_BET != 0:
+            print("Player 2 bet, so you must bet or fold!")
         print("Press 'B' to bet, 'C' to check, or 'F' to fold: ")
         while True:
             turn = input()
@@ -239,7 +218,7 @@ def player_turn(player):
                 bet(player, int(num_w), int(num_r), int(num_b))
                 break
 
-            elif turn == "C":
+            elif turn == "C" and P2_BET == 0:
                 print()
                 print("Player 1 chose to check!")
                 print()
@@ -256,12 +235,13 @@ def player_turn(player):
             else:
                 print("Invalid Response! Please try again.")
                 print("Valid responses: 'B' to bet, 'C' to check, or 'F' to fold.")
+                print("Or, if Player 2 bet, you must bet or fold.")
         print_screen()
 
 
     else:
-        
-        print("Player 2, it's your turn!")
+        if P1_BET != 0:
+            print("Player 1 bet, so you must bet or fold!")
         print("Press 'B' to bet, 'C' to check, or 'F' to fold: ")
         while True:
             turn = input()
@@ -306,7 +286,7 @@ def player_turn(player):
                 bet(player, int(num_w), int(num_r), int(num_b))
                 break
 
-            elif turn == "C":
+            elif turn == "C" and P1_BET == 0:
                 print()
                 print("Player 2 chose to check!")
                 time.sleep(1)
@@ -322,7 +302,8 @@ def player_turn(player):
 
             else:
                 print("Invalid Response! Please try again.")
-                print("Valid responses: 'B' to bet, or 'C' to check")
+                print("Valid responses: 'B' to bet, 'C' to check, or 'F' to fold.")
+                print("Or, if Player 1 bet, you must bet or fold.")
         print_screen()
 
     return turn
@@ -404,18 +385,10 @@ def print_screen():
 #********************************************PLAY THE GAME************************************************
 
 def play():
+    global P1_BET
+    global P2_BET
     global P1_HAND
-    global P1_CHIPS
-    global P1_TOTAL
-    global P1_W
-    global P1_R
-    global P1_B
     global P2_HAND
-    global P2_CHIPS
-    global P2_TOTAL
-    global P2_W
-    global P2_R
-    global P2_B
     print()
     print("******************************Welcome to Poker! Let's Play!******************************")
     print()
@@ -430,14 +403,24 @@ def play():
     round = 1
     if round % 2 != 0:
         print("First Round of Betting!")
-        p1_turn = player_turn("Player 1")
-        if p1_turn == "B":
-            print("Player 2, you must bet or fold!")
-        player_turn("Player 2")
+        P1_BET = 0
+        P2_BET = 0
+        print("Player 1, it's your turn!")
+        p1 = player_turn("Player 1")
+        print("Player 2, it's your turn!")
+        p2 = player_turn("Player 2")
+        if p2 == "B" and p1 != "B":
+            player_turn("Player 1")
 
         print("Second Round of Betting!")
-        player_turn("Player 1")
-        player_turn("Player 2")
+        P1_BET = 0
+        P2_BET = 0
+        print("Player 1, it's your turn!")
+        p1 = player_turn("Player 1")
+        print("Player 2, it's your turn!")
+        p2 = player_turn("Player 2")
+        if p2 == "B" and p1 != "B":
+            player_turn("Player 1")
 
         print("The round is over! Let's see who won...")
         time.sleep(3)
@@ -450,7 +433,5 @@ def play():
             hand_winner("Player 1")
         else:
             hand_winner("Player 2") 
-        print_chip_total("Player 1")
-        print_chip_total("Player 2")
 
 play()
