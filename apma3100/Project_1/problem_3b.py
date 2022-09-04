@@ -1,3 +1,5 @@
+# We need the code from problem 2a again, so we'll get our password_list again here
+
 password_list = []
 
 for i in range(8):
@@ -35,7 +37,11 @@ for i in range(0, len(password_list)):
         if password == password_copy and i != j:
             print("These combinations are not unique.")
 
-
+#Ok, these needs some explaining. num is in base 8, meaning the digits it uses are 0-7. It starts at
+#11111 (the 0o is just Python's octal notation) and goes to 77777, incrementing by 1 in each iteration of the
+#while loop. num is converted to a string, the 0o is taken off, and then it's converted to a list of ints.
+#The for loop then checks if any of the digits are repeated. If none are repeated and there are no zeroes in the
+#password, then it will be added to the list of valid combinations. 
 num = 0o11111
 num_passwords = []
 
@@ -52,6 +58,11 @@ while num <= 0o77777:
     if no_repeats and pword.count(0) == 0:
         num_passwords.append(pword)
 
+#However, the previous block does not take the 0s into account, it just has a list of the possible 5-number
+#combinations using 1-7. This next block of nested for loops goes through the previously determined binary
+#passwords with three 0s, and for each of those passwords replaces the 5 ones with all possible 5 number
+#combinations of 1-7 that we found previously. The result is the number of unique passwords with exactly 3 zeroes
+#and 5 numbers 1-7 with no repeating values.
 
 final_passwords = []
 for j in range(0, len(password_list)):

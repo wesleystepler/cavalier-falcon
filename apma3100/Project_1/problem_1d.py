@@ -1,14 +1,12 @@
 classes = ["astronomy", "calculus", "french", "history", "literature", "organic chemistry", "physics"]
-"""
-The strategy: Have the initial order as the the first four alphabetical books. Then, sequentially replace the last
-book in the order with the next textbook in the overall list. Then, shift the second to last book down one, and
-iterate through the last one again
-"""
+
+
 count = 0
 order_list = []
 order = ["astronomy", "calculus", "french", "history"]
 for book1 in classes:
     for book2 in classes:
+        #The inequalities ensure the books are listed in alphabetical order
         if book2 > book1:
             for book3 in classes:
                 if book3 > book1 and book3 > book2:
