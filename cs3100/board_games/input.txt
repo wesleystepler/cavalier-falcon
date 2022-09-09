@@ -1,0 +1,43 @@
+4
+4
+0 1
+1 3
+0 2
+2 3
+1
+2
+
+
+   if (!file.is_open()) {
+    cout << "Unable to open file for reading" << endl;
+    exit(2);
+   } 
+
+   string s;
+   while (getline(file, s)) {
+
+      if (s.size() > 1) {
+
+         for(int i = 0; i < s.size(); i++) {
+            string which_node = "first";
+            int first;
+
+            if (isdigit(s[i])) {
+                if (which_node == "first") {
+                    cout << "Node: " << s[i] << endl;
+                    first = int(s[i]);
+                    which_node = "second";
+                } 
+                else if (which_node == "second") {
+                    
+                }
+         }
+      } 
+       
+   } else {
+        if (which_num == 0) {
+            
+        }
+        
+      }
+}
