@@ -1,7 +1,0 @@
-groceryshopping
-pickupkids
-cookdinner
-bedtime 
-groceryshopping cookdinner 
-pickupkids cookdinner 
-cookdinner bedtime
