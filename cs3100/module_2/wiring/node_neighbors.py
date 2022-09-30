@@ -1,30 +1,35 @@
-class Node:
+from node import Node
+class NodeNeighbors:
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
-    def __init__(self, label=1000000000000, status="Unvisited") -> None:
-        possible_statuses = ["Unvisited", "Queued", "Visited"]
-        self.label = label
-        self.status = status
+    def __init__(self, node=Node(), cost=0):
+        self.node = node
+        self.cost = cost
 
     def __gt__(self, other):
-        if self.label > other.label:
+        if self.cost > other.cost:
             return True
         else:
             return False
 
     def __lt__(self, other):
-        if self.label < other.label:
+        if self.cost < other.cost:
             return True
         else:
             return False
 
     def __eq__(self, other):
-        if self.label == other.label:
+        if self.cost == other.cost:
             return True
         else:
             return False
+        
+    
 
 
     def __repr__(self) -> str:
-        return f"Label: {self.label}\n Status: {self.status}"
+        return f"({self.node.label}, {self.cost})"
+
+    
+

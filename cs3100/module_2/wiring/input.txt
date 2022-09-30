@@ -1,0 +1,39 @@
+6 8
+b1 breaker
+j1 box
+s1 switch
+l1 light
+l2 light
+o1 outlet
+b1 j1 5
+b1 o1 1
+j1 s1 1
+j1 o1 2
+o1 l1 1
+l1 l2 2
+s1 l1 6
+s1 l2 1
+
+
+
+Test case:
+
+6 12
+0 node
+1 node
+2 node
+3 node
+4 node
+5 node
+4 5 5 
+3 5 9
+0 2 1
+0 1 1
+0 5 4
+2 4 2
+1 4 1
+1 5 7
+2 3 6
+3 4 1
+0 3 1
+0 4 3

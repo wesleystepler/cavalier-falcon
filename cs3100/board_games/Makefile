@@ -5,4 +5,4 @@ all :
 
 	#runs your code. You can change main.py to the name of your main python file if you need to.
 run :
-	python3 board_games.py
+	python3 board_games2.py
