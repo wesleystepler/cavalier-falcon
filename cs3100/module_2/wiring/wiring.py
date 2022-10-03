@@ -1,27 +1,66 @@
 from node import Node
 from node_neighbors import NodeNeighbors
 
+def pre_switch(node):
+    if node.type == "breaker" or node.type == "outlet" or node.type == "box":
+        return True
+    else:
+        return False
+
+def is_switch(node):
+    if node.type == "switch":
+        return True
+    else:
+        return False
+
+def post_switch(node):
+    if node.type == "light":
+        return True
+    else:
+        return False
+
+def can_connect(node1, node2):
+    if pre_switch(node1) and pre_switch(node2):
+        return True
+
+    elif pre_switch(node1) and is_switch(node2):
+        return True 
+
+    elif is_switch(node1) and post_switch(node2) and node2.which_switch == node1.label:
+        return True
+
+    elif post_switch(node1) and post_switch(node2) and node1.which_switch == node2.which_switch:
+        return True
+    
+    else:
+        return False
+
+
+
 nums = [int(i) for i in input().split() if i.isdigit()]
 num_nodes = nums[0]
 num_connections = nums[1]
+pre_switches = 0
+switches = 0
+post_switches = 0
 
 adj_matrix = []
 node_list = []
 
-"""
-Index reference:
-0 = b1
-1 = j1
-2 = s1
-3 = l1
-4 = l2
-5 = o1
-"""
 
 for i in range(0, num_nodes):
     adj_matrix.append([0]*num_nodes)
     juncs = [j for j in input().split()]
-    node_list.append(Node(juncs[0], False, juncs[1], i, []))
+    n = Node(juncs[0], False, juncs[1], i, [])
+    if n.type == "switch":
+        last_switch = n.label
+        switches += 1
+    elif n.type == "light":
+        n.which_switch = last_switch
+        post_switches += 1
+    else:
+        pre_switches += 1
+    node_list.append(n)
 
 for i in range(0, num_connections):
     c = input()
@@ -32,33 +71,34 @@ for i in range(0, num_connections):
         elif node.label == c[1]:
             node2 = node
 
-    node1.neighbors.append(NodeNeighbors(node2, int(c[2])))
-    node2.neighbors.append(NodeNeighbors(node1, int(c[2])))
-    adj_matrix[node1.index][node2.index] = int(c[2])
-    adj_matrix[node2.index][node1.index] = int(c[2])  
+
+    if can_connect(node1, node2):
+            node1.neighbors.append(NodeNeighbors(node2, int(c[2])))
+            node2.neighbors.append(NodeNeighbors(node1, int(c[2])))
+            adj_matrix[node1.index][node2.index] = int(c[2])
+            adj_matrix[node2.index][node1.index] = int(c[2])  
 
 
-#for node in node_list:
-#    print(node.label, ":", node.neighbors)  
-
-def add_to_queue(graph, cur_node, pq):
+def add_to_queue(mst_edges, cost, cur_node, pq):
     cur_node.known = True
     for i in range(0, len(cur_node.neighbors)):
         if not cur_node.neighbors[i].node.known:
+
             pq.append(cur_node.neighbors[i])
 
-"""
-Adj Matrix Reference
-     b1 j1 s1 l1 l2 o1
-b1    0  5  0  0  0  1
-j1    5  0  1  0  0  2
-s1    0  1  0  6  1  0
-l1    0  0  6  0  2  1
-l2    0  0  1  2  0  0
-01    1  2  0  1  0  0
-"""
+        else:
+            for j in range(0, len(mst_edges)):
+                if cur_node.neighbors[i].node == mst_edges[j].node and cur_node.neighbors[i].cost < mst_edges[j].cost:
+                    cost -= mst_edges[j].cost
+                    mst_edges[j] = cur_node.neighbors[i]
+                    cost += cur_node.neighbors[i].cost
 
-def prims(graph, num_nodes, node_list):
+
+def prims(graph, num_nodes, node_list, pre_s, s, post_s):
+    """
+    Current Problem: illegal connections are still in the pq, need to not 
+    be there and/or ignored
+    """
     m = num_nodes - 1
     edge_count = 0
     cost = 0
@@ -66,23 +106,64 @@ def prims(graph, num_nodes, node_list):
     pq = []
     cur_node = node_list[0]
     cur_node.known = True
-    add_to_queue(graph, cur_node, pq)
+    add_to_queue(mst_edges, cost, cur_node, pq)
     #print(pq)
 
-    while len(pq) != 0 and edge_count != m:
-        cur_edge = min(pq)
-        pq.remove(cur_edge)
-        cur_node = cur_edge.node
+    while len(pq) != 0 and len(mst_edges) < m:
+        cur_edge = Node() # Dummy value
+        if pre_s > 0:
+            poss_min = []
+            if pre_s == 1:
+                cur_edge = min(pq)
+                pq.remove(cur_edge)
+            else:
+                for i in range(0, len(pq)):
+                    if pre_switch(pq[i].node):
+                        poss_min.append(pq[i])
+                cur_edge = min(poss_min)
+                pq.remove(cur_edge)
+            pre_s -= 1
 
+        elif s > 0:
+            poss_min = []
+            if s == 1:
+                cur_edge = min(pq)
+                pq.remove(cur_edge)
+            else:
+                for i in range(0, len(pq)):
+                    if is_switch(pq[i].node):
+                        poss_min.append(pq[i])
+                cur_edge = min(poss_min)
+                pq.remove(cur_edge)
+            s -= 1
+
+        elif post_s > 0:
+            poss_min = []
+            if post_s == 1:
+                cur_edge = min(pq)
+                pq.remove(cur_edge)
+            else:
+                for i in range(0, len(pq)):
+                    if post_switch(pq[i].node):
+                        poss_min.append(pq[i])
+                cur_edge = min(poss_min)
+                pq.remove(cur_edge)
+            post_s -= 1
+
+        else:
+            cur_edge = min(pq)
+            pq.remove(cur_edge)
+
+        cur_node = cur_edge.node
         if cur_node.known:
             continue
         mst_edges.append(cur_edge)
         cost += cur_edge.cost
         
-        add_to_queue(graph, cur_node, pq)
+        add_to_queue(mst_edges, cost, cur_node, pq)
         #print(pq)
 
     print(mst_edges)
     print(cost)
 
-prims(adj_matrix, num_nodes, node_list)
+prims(adj_matrix, num_nodes, node_list, pre_switches, switches, post_switches)

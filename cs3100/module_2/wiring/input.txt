@@ -16,7 +16,85 @@ s1 l2 1
 
 
 
-Test case:
+Test cases:
+
+Cheaper path with wiring constraints:
+5 5
+b1 breaker
+j1 box
+o1 outlet
+s1 switch
+l1 light
+b1 j1 2
+b1 o1 3
+o1 j1 1
+j1 s1 2
+s1 l1 1
+
+
+Cheapter Path:
+5 5
+0 x
+1 x
+2 x
+3 x
+4 x
+0 1 1
+1 2 1
+2 3 1
+3 4 3
+0 4 2
+
+Test what happens when the algorithm finds a cheaper path to a known node. 
+4 5
+0 x
+1 x
+2 x
+3 x
+0 1 2
+0 2 3
+1 2 1
+1 3 2
+2 3 4
+
+Graph from YT video
+8 14
+0 node
+1 node
+2 node
+3 node
+4 node
+5 node
+6 node
+7 node
+0 1 10
+0 3 4
+0 2 1
+1 2 3
+1 4 0
+2 5 8
+2 3 2
+4 5 1
+4 7 8
+5 7 9
+5 6 6
+5 3 2
+6 3 7
+6 7 12
+
+4 4
+0 n
+1 n
+2 n
+3 n
+0 1 1
+0 2 5
+1 3 1
+2 3 1
+
+0------1
+
+2------3
 
 6 12
 0 node
