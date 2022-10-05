@@ -3,8 +3,9 @@ class NodeNeighbors:
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
-    def __init__(self, node=Node(), cost=0):
+    def __init__(self, node=Node(), node2 = Node(), cost=0):
         self.node = node
+        self.node2 = node2
         self.cost = cost
 
     def __gt__(self, other):
@@ -20,7 +21,7 @@ class NodeNeighbors:
             return False
 
     def __eq__(self, other):
-        if self.cost == other.cost:
+        if self.node == other.node and self.node2 == other.node2 or self.node == other.node2 and self.node2 == other.node:
             return True
         else:
             return False
@@ -29,7 +30,7 @@ class NodeNeighbors:
 
 
     def __repr__(self) -> str:
-        return f"({self.node.label}, {self.cost})"
+        return f"({self.node.label}, {self.node2.label}, {self.cost})"
 
     
 
