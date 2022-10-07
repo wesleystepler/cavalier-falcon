@@ -1,3 +1,11 @@
+"""
+Collaborated with:
+Andrew Cornfeld (cpm6gh)
+Connor Wilson (crw8eg)
+Lydia Stoner (lcs6bak)
+Thomas Laughridge (tcl5tu)
+"""
+
 from node import Node
 from node_neighbors import NodeNeighbors
 
