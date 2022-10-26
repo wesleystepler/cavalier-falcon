@@ -24,6 +24,20 @@ while take_input:
 #for list in p_list:
 #    print(list)
 
+def distance(p1, p2):
+    import math
+    t1 = (p2[0] - p1[0])**2
+    t2 = (p2[1] - p1[1])**2
+    dist = math.sqrt(t1 + t2)
+    return dist
+
+def brute_force(point_list):
+    # Test points: (1,3), (4,2), (5,2)
+    result = distance(point_list[0], point_list[1])
+    return result
+
+
+
 def closest_points(point_list: "list[tuple]"):
     point_list.sort()
-    
+

@@ -38,3 +38,12 @@ All rooms shrinking:
 Only one room
 1
 1 6
+
+
+
+
+
+12 11
+5 4
+4 2
+3 1

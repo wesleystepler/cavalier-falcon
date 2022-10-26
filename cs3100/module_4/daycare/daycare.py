@@ -2,51 +2,78 @@ from room import Room
 import math
 
 # Greedy choice for the growing rooms: pick the original room size that has the biggest upgrade
+# Greedy choice for staying the same size: pick the largest room
+# Greedy choice for all shrinking: largest original size 
 
 rooms = []
+
+increasing = []
+same = []
+decreasing = []
+
+
 for i in range(0,2):
     num_rooms = int(input())
     for i in range(0, num_rooms):
         cap = input().split()
         room = Room(f"Room {i+1}", int(cap[0]), int(cap[1]))
         rooms.append(room)
+        if room.new_max - room.old_max > 0:
+            increasing.append(room)
+        elif room.new_max - room.old_max < 0:
+            decreasing.append(room)
+        else:
+            same.append(room)
 
     max_diff = 0
-    max_old = 0
-    cost = 0
-    for room in rooms:
-        diff = room.new_max - room.old_max
-        if diff > max_diff:
-            max_diff = diff
-            cost = room.old_max
-        if room.old_max > max_old:
-            max_old = room.old_max
-    rooms.clear()
-    if max_diff >= max_old:
-        print(cost)
-    elif max_diff < 0:
-        print(max_old)
+    r = Room()
+
+    if len(increasing) == 0 and len(same) == 0 and len(decreasing) > 0:
+        #decreasing.sort()
+        solution = 0
+        for i in range(0, len(decreasing)):
+            if decreasing[i].old_max > solution:
+                solution = decreasing[i].old_max
+
+        for i in range(1, len(decreasing)):
+            solution += (abs(decreasing[i].new_max - decreasing[i].old_max))
+        print(solution)
+        
+    elif len(increasing) == 0 and len(same) == 0 and len(decreasing) == 0:
+        solution = 0
+        for i in range(0, len(rooms)):
+            solution += rooms[i].old_max
+        print(solution)
     else:
-        print(max_old)
+        for i in range(0, len(increasing)):
+            diff = increasing[i].new_max - increasing[i].old_max
+            if diff > max_diff:
+                max_diff = diff
+                r = increasing[i]
+            elif diff == max_diff:
+                if increasing[i].old_max < r.old_max:
+                    r = increasing[i]
+
+        for i in range(0, len(same)):
+            if same[i].old_max > max_diff:
+                max_diff = same[i].old_max
+                r = same[i]
+            elif same[i].old_max == max_diff:
+                if same[i].old_max < r.old_max:
+                    r = same[i]
 
 
+        for i in range(0, len(decreasing)):
+            diff = decreasing[i].old_max - decreasing[i].new_max 
+            if diff > max_diff:
+                max_diff = decreasing[i].old_max
+                r = decreasing[i]
+            elif diff == max_diff:
+                if decreasing[i].old_max < r.old_max:
+                    r = same[i]
 
-"""
-Strategy:
-Process input in this order:
-    Rooms that are growing in size
-    Rooms that stay the same size
-    Rooms that shrink in size
-Sample case:
-4
-6 6
-1 7
-3 5
-3 5
-
-This would then be ordered:
-    1 7
-    3 5
-    3 5
-    6 6
-"""
+        print(r.old_max)
+        
+    increasing.clear()
+    same.clear()
+    decreasing.clear()
