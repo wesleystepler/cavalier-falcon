@@ -13,3 +13,31 @@ for i in range(0, num_cases):
     
 for row in grid:
     print(row)
+
+def grid_search(grid, index_a, index_b, path):
+    current = grid[index_a][index_b]
+    if grid[index_a+1][index_b] < current and index_a < len(grid):
+        path.append(grid[index_a+1][index_b])
+        index_a += 1
+        grid_search(grid, index_a, index_b, path)
+    
+    elif grid[index_a][index_b+1] < current and index_a + 1 < len(grid[index_a]):
+        path.append(grid[index_a][index_b+1])
+        index_b += 1
+        grid_search(grid, index_a, index_b, path)
+
+    elif grid[index_a][index_b-1] < current and index_b > 0:
+        path.append(grid[index_a][index_b-1])
+        index_b -= 1
+        grid_search(grid, index_a, index_b, path)
+
+    elif grid[index_a-1][index_b] < current and index_a > 0:
+        path.append(grid[index_a-1][index_b])
+        index_a -= 1
+        grid_search(grid, index_a, index_b, path)
+    else:
+        return path
+
+print(grid_search(grid, 0, 0, []))
+
+    
