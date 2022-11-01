@@ -1,3 +1,8 @@
+"""
+Wesley Stepler - pws3ms
+APMA 3100 - Probability Project 2
+"""
+
 import random
 import math
 import statistics
