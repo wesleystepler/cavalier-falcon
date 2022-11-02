@@ -1,3 +1,7 @@
+Possible DP solution: 
+find solution for a 1x1 grid, then solution for a 2x2 grid, then 3x3 grid, etc. all the way
+to an nxn grid. 
+
 4
 Charlottesville 5 5
 66 78 41 3 77
@@ -21,3 +25,5 @@ Wintergreen 5 5
 11 12 13 14 15
 20 19 18 17 16
 21 22 23 24 25
+
+Expected path for Charlottesville: 99-96-58-29-24-8-3

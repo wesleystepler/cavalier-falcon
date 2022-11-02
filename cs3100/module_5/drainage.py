@@ -15,28 +15,49 @@ for row in grid:
     print(row)
 
 def grid_search(grid, index_a, index_b, path):
-    current = grid[index_a][index_b]
-    if grid[index_a+1][index_b] < current and index_a < len(grid):
-        path.append(grid[index_a+1][index_b])
-        index_a += 1
-        grid_search(grid, index_a, index_b, path)
-    
-    elif grid[index_a][index_b+1] < current and index_a + 1 < len(grid[index_a]):
-        path.append(grid[index_a][index_b+1])
-        index_b += 1
-        grid_search(grid, index_a, index_b, path)
+    for i in range(index_a, len(grid)):
+        for j in range(index_b, len(grid[i])):
+            visited = []
+            current = grid[i][j]
+            neighbors = []
+            if i < len(grid) - 1:
+                neighbors.append(grid[i+1][j])
+            if j < len(grid[i]) - 1:
+                neighbors.append(grid[i][j+1])
+            if i > 0:
+                neighbors.append(grid[i-1][j])
+            if j > 0:
+                neighbors.append(grid[i][j-1])
+            counter = 0
+            for num in neighbors:
+                if current < num:
+                    counter += 1
+            if counter == len(neighbors):
+                path.append(visited)
 
-    elif grid[index_a][index_b-1] < current and index_b > 0:
-        path.append(grid[index_a][index_b-1])
-        index_b -= 1
-        grid_search(grid, index_a, index_b, path)
+            elif grid[i+1][j] < current:
+                visited.append(grid[i+1][j])
+                index_a += 1
+                grid_search(grid, index_a, index_b, path)
+                visited.clear()
+            
+            elif grid[i][j+1] < current:
+                visited.append(grid[i][j+1])
+                index_b += 1
+                grid_search(grid, index_a, index_b, path)
+                visited.clear()
 
-    elif grid[index_a-1][index_b] < current and index_a > 0:
-        path.append(grid[index_a-1][index_b])
-        index_a -= 1
-        grid_search(grid, index_a, index_b, path)
-    else:
-        return path
+            elif grid[i][j-1] < current and j > 0:
+                visited.append(grid[i][j-1])
+                index_b -= 1
+                grid_search(grid, index_a, index_b, path)
+                visited.clear()
+
+            elif grid[i-1][j] < current and i > 0:
+                visited.append(grid[i-1][j])
+                index_a -= 1
+                grid_search(grid, index_a, index_b, path)
+                visited.clear()
 
 print(grid_search(grid, 0, 0, []))
 
