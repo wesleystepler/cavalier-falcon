@@ -14,11 +14,16 @@ for i in range(0, num_cases):
 for row in grid:
     print(row)
 
-def grid_search(grid, index_a, index_b, path):
+all_paths = []
+def grid_search(grid, index_a, index_b, visited):
+    global all_paths
     for i in range(index_a, len(grid)):
         for j in range(index_b, len(grid[i])):
-            visited = []
+            print(j)
+            visited.append(grid[i][j])
             current = grid[i][j]
+            if current == 78:
+                print()
             neighbors = []
             if i < len(grid) - 1:
                 neighbors.append(grid[i+1][j])
@@ -33,32 +38,28 @@ def grid_search(grid, index_a, index_b, path):
                 if current < num:
                     counter += 1
             if counter == len(neighbors):
-                path.append(visited)
+                all_paths.append(visited.copy())
+                return visited
 
             elif grid[i+1][j] < current:
-                visited.append(grid[i+1][j])
-                index_a += 1
-                grid_search(grid, index_a, index_b, path)
+                grid_search(grid, index_a+1, index_b, visited)
                 visited.clear()
             
             elif grid[i][j+1] < current:
-                visited.append(grid[i][j+1])
-                index_b += 1
-                grid_search(grid, index_a, index_b, path)
+                grid_search(grid, index_a, index_b+1, visited)
                 visited.clear()
 
             elif grid[i][j-1] < current and j > 0:
-                visited.append(grid[i][j-1])
                 index_b -= 1
-                grid_search(grid, index_a, index_b, path)
+                grid_search(grid, index_a, index_b-1, visited)
                 visited.clear()
 
             elif grid[i-1][j] < current and i > 0:
-                visited.append(grid[i-1][j])
                 index_a -= 1
-                grid_search(grid, index_a, index_b, path)
+                grid_search(grid, index_a-1, index_b, visited)
                 visited.clear()
 
 print(grid_search(grid, 0, 0, []))
+print(all_paths)
 
     
