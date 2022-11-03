@@ -1,6 +1,19 @@
 Possible DP solution: 
-find solution for a 1x1 grid, then solution for a 2x2 grid, then 3x3 grid, etc. all the way
-to an nxn grid. 
+Just store the length when you start from each number in some sort of data structure so you have it for later
+
+Smaller test case:
+1
+c 3 3
+
+4 3 7
+1 4 6
+8 5 3
+
+Even smaller test case:
+1
+c 2 2
+2 3
+1 5
 
 4
 Charlottesville 5 5

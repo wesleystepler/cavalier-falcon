@@ -1,5 +1,53 @@
 from map import Map
 
+
+all_paths = []
+max_path = []
+
+def grid_search(grid, i, j, path):
+    global all_paths
+    global max_path
+
+    current = grid[i][j]
+    path.append(current)
+    neighbors = []
+    neighbors.append(current)
+    if i < len(grid) - 1:
+        neighbors.append(grid[i+1][j])
+    if j < len(grid[i]) - 1:
+        neighbors.append(grid[i][j+1])
+    if i > 0:
+        neighbors.append(grid[i-1][j])
+    if j > 0:
+        neighbors.append(grid[i][j-1])
+
+    if min(neighbors) == current:
+        all_paths.append(path.copy())
+        if len(path) > len(max_path):
+            max_path = path.copy()
+        return path
+
+    else:
+        if i + 1 < len(grid):
+            if grid[i+1][j] < current:
+                grid_search(grid, i+1, j, path)
+                path.pop()
+        if j+1 < len(grid[i]):
+            if grid[i][j+1] < current:
+                grid_search(grid, i, j+1, path)
+                path.pop()
+        if j - 1 >= 0:
+            if grid[i][j-1] < current:
+                grid_search(grid, i, j-1, path)
+                path.pop()
+        if i - 1 >= 0:
+            if grid[i-1][j] < current:
+                grid_search(grid, i-1, j, path)
+                path.pop()
+
+
+
+
 num_cases = int(input())
 for i in range(0, num_cases):
     label_and_size = input().split()
@@ -10,83 +58,15 @@ for i in range(0, num_cases):
         row = [int(i) for i in input().split()]
         grid.append(row)
 
-    
-for row in grid:
-    print(row)
 
-all_paths = []
-completed = []
-def grid_search(grid, index_a, index_b, visited):
-    global all_paths
-    global completed
-    
-    while index_a < len(grid):
-        while index_b < len(grid[i]):
-            print(index_a, index_b)
-            visited.append(grid[index_a][index_b])
-            current = grid[index_a][index_b]
-            if current == 7:
-                print()
-            neighbors = []
-            if index_a < len(grid) - 1:
-                neighbors.append(grid[index_a+1][index_b])
-            if index_b < len(grid[index_a]) - 1:
-                neighbors.append(grid[index_a][index_b+1])
-            if index_a > 0:
-                neighbors.append(grid[index_a-1][index_b])
-            if index_b > 0:
-                neighbors.append(grid[index_a][index_b-1])
-            counter = 0
-            for num in neighbors:
-                if current < num:
-                    counter += 1
-            if counter == len(neighbors):
-                all_paths.append(visited.copy())
-                if len(visited) > 1:
-                    return visited
-                
+    for i in range(0, len(grid)):
+        for j in range(0, len(grid)):
+            grid_search(grid, i, j, [])
 
-            else:
-
-                if index_a + 1 < len(grid):
-                    if grid[index_a+1][index_b] < current:
-                        temp1 = index_a
-                        temp2 = index_b
-                        grid_search(grid, index_a+1, index_b, visited)
-                        index_a = temp1
-                        index_b = temp2
-                        visited.pop()
-                if index_b+1 < len(grid[index_a]):
-                    if grid[index_a][index_b+1] < current:
-                        temp1 = index_a
-                        temp2 = index_b
-                        grid_search(grid, index_a, index_b+1, visited)
-                        index_a = temp1
-                        index_b = temp2
-                        visited.pop()
-                if index_b - 1 >= 0:
-                    if grid[index_a][index_b-1] < current:
-                        temp1 = index_a
-                        temp2 = index_b
-                        grid_search(grid, index_a, index_b-1, visited)
-                        index_a = temp1
-                        index_b = temp2
-                        visited.pop()
-                if index_a - 1 >= 0:
-                    if grid[index_a-1][index_b] < current:
-                        temp1 = index_a
-                        temp2 = index_b
-                        grid_search(grid, index_a-1, index_b, visited)
-                        index_a = temp1
-                        index_b = temp2
-                        visited.pop()
-            visited.clear()
-
-            index_b += 1
-        index_a += 1
-    return "Done"
-
-print(grid_search(grid, 0, 0, []))
-print(all_paths)
+    #print(all_paths)
+    print(max_path)
+    print(len(max_path))
+    all_paths.clear()
+    max_path.clear()
 
     
