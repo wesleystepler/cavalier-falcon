@@ -1,14 +1,23 @@
 from map import Map
 
-
 all_paths = []
 max_path = []
+past_paths = {}
 
 def grid_search(grid, i, j, path):
     global all_paths
     global max_path
+    global past_paths
 
     current = grid[i][j]
+    if current in past_paths:
+        path += past_paths[current]
+        all_paths.append(path.copy())
+        past_paths[path[0]] = path.copy()
+        if len(path) > len(max_path):
+            max_path = path.copy()
+        return path
+        
     path.append(current)
     neighbors = []
     neighbors.append(current)
@@ -23,6 +32,9 @@ def grid_search(grid, i, j, path):
 
     if min(neighbors) == current:
         all_paths.append(path.copy())
+        if path[0] in past_paths:
+            if len(path) > len(past_paths[path[0]]):
+                past_paths[path[0]] = path.copy()
         if len(path) > len(max_path):
             max_path = path.copy()
         return path
@@ -60,12 +72,12 @@ for i in range(0, num_cases):
 
 
     for i in range(0, len(grid)):
-        for j in range(0, len(grid)):
+        for j in range(0, len(grid[i])):
             grid_search(grid, i, j, [])
 
     #print(all_paths)
-    print(max_path)
-    print(len(max_path))
+    #print(max_path)
+    print(f"{m.label}: {len(max_path)}")
     all_paths.clear()
     max_path.clear()
 
