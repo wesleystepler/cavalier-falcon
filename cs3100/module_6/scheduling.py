@@ -11,9 +11,6 @@ index = 0
 
 for i in range(0, r):
     s = input().split()
-    #if index_tracker.get(s[0]) == None:
-    #    index_tracker[s[0]] = index
-    #    index += 1
     if s[0] not in index_tracker.values():
         index_tracker[index] = s[0]
         index += 1
@@ -29,9 +26,6 @@ num_students = len(index_tracker)
     
 for i in range(0, c):
     s = input().split()
-    #if index_tracker.get(s[0]) == None:
-    #    index_tracker[s[0]] = index
-    #    index += 1
     if s[0] not in index_tracker.values():
         index_tracker[index] = s[0]
         index += 1
@@ -40,9 +34,6 @@ for i in range(0, c):
         reqs_tracker[s[0]] = s[1]
 
 num_courses = len(index_tracker) - num_students
-
-#index_tracker["Source"] = len(index_tracker)
-#index_tracker["Sink"] = len(index_tracker)
 
 index_tracker[len(index_tracker)] = "Source"
 index_tracker[len(index_tracker)] = "Sink"
@@ -77,3 +68,47 @@ for row in graph:
 
 print(num_students)
 print(num_courses)
+
+# Implement Ford-Fulkerson
+# All augmenting paths will have this form:
+# Source --> Student --> Class --> Sink
+
+is_path = True
+cur_ind = 0
+while is_path:
+    for j in range(0, num_students):
+        if graph[-2][j] != 0:
+            graph[-2][j] -= 1
+            graph[j][-2] += 1
+            cur_ind = j
+            break
+        if j == num_students - 1:
+            is_path = False
+
+    if is_path:
+        for j in range(num_students, num_courses):
+            if graph[cur_ind][j] != 0:
+                graph[cur_ind][j] -= 1
+                graph[j][cur_ind] += 1
+                cur_ind = j
+                break
+
+            if j == num_students - 1:
+                is_path = False
+
+    if is_path:
+        for j in range(num_students, num_courses):
+            if graph[j][-2] != 0:
+                graph[j][-2] -= 1
+                graph[-2][j] += 1
+                break
+            if j == num_students - 1:
+                is_path = False
+                
+
+
+
+
+
+
+
