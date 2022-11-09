@@ -72,39 +72,23 @@ print(num_courses)
 # Implement Ford-Fulkerson
 # All augmenting paths will have this form:
 # Source --> Student --> Class --> Sink
+is_path = False
+def dfs(graph, start, end, visited):
+    global is_path
+    if len(graph) > 1:
+        visited.append(start)
+        if start == end:
+            is_path = True
+            return True
+        else:
+            for i in range(0, len(graph[start])):
+                if i not in visited and graph[start][i] != 0:
+                    v = i
+                    dfs(graph, v, end, visited)
 
-is_path = True
-cur_ind = 0
-while is_path:
-    for j in range(0, num_students):
-        if graph[-2][j] != 0:
-            graph[-2][j] -= 1
-            graph[j][-2] += 1
-            cur_ind = j
-            break
-        if j == num_students - 1:
-            is_path = False
+dfs(graph, 7, len(graph)-1, [])
+print(is_path)
 
-    if is_path:
-        for j in range(num_students, num_courses):
-            if graph[cur_ind][j] != 0:
-                graph[cur_ind][j] -= 1
-                graph[j][cur_ind] += 1
-                cur_ind = j
-                break
-
-            if j == num_students - 1:
-                is_path = False
-
-    if is_path:
-        for j in range(num_students, num_courses):
-            if graph[j][-2] != 0:
-                graph[j][-2] -= 1
-                graph[-2][j] += 1
-                break
-            if j == num_students - 1:
-                is_path = False
-                
 
 
 
