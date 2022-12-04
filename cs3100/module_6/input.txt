@@ -1,4 +1,4 @@
-9 3 1
+9 3 2
 Alice CS_2102
 Alice CS_3102
 Alice CS_4102
@@ -24,3 +24,19 @@ David   [0, 0, 0, 0, 1, 1, 0, 0, 0]
 4102    [0, 0, 0, 0, 0, 0, 0, 0, 3]
 Source  [2, 2, 2, 2, 0, 0, 0, 0, 0]
 Sink    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+Significantly simpler Graph
+
+2 2 1
+Alice CS_2102
+Bob CS_3102
+CS_2102 1
+CS_3102 1
+
+       A  B  2  3  So Si
+Alice  0  0  1  0  0  0
+Bob    0  0  0  1  0  0
+2102   0  0  0  0  0  1
+3102   0  0  0  0  0  1
+Source 1  1  0  0  0  0
+Sink   0  0  0  0  0  0
