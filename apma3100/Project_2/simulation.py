@@ -6,7 +6,7 @@ APMA 3100 - Probability Project 2
 import random
 import math
 import statistics
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 # Run the simulation 
 runs = 10000
