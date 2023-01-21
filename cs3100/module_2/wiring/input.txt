@@ -1,0 +1,309 @@
+6 8
+b1 breaker
+j1 box
+s1 switch
+l1 light
+l2 light
+o1 outlet
+b1 j1 5
+b1 o1 1
+j1 s1 1
+j1 o1 2
+o1 l1 1
+l1 l2 2
+s1 l1 6
+s1 l2 1
+
+
+
+Test cases:
+
+From Google Doc:
+5 9
+b1 breaker
+o1 outlet
+j1 box
+s1 switch
+l1 light
+b1 o1 2
+b1 s1 1
+b1 j1 5
+b1 l1 2
+s1 o1 1
+s1 j1 1
+s1 l1 5
+j1 l1 1
+o1 l1 1
+
+Cheaper path with wiring constraints:
+5 5
+b1 breaker
+j1 box
+o1 outlet
+s1 switch
+l1 light
+b1 j1 2
+b1 o1 3
+o1 j1 1
+j1 s1 2
+s1 l1 1
+
+
+Cheapter Path:
+5 5
+0 x
+1 x
+2 x
+3 x
+4 x
+0 1 1
+1 2 1
+2 3 1
+3 4 3
+0 4 2
+
+Test what happens when the algorithm finds a cheaper path to a known node. 
+4 5
+0 x
+1 x
+2 x
+3 x
+0 1 2
+0 2 3
+1 2 1
+1 3 2
+2 3 4
+
+Graph from YT video
+8 14
+0 node
+1 node
+2 node
+3 node
+4 node
+5 node
+6 node
+7 node
+0 1 10
+0 3 4
+0 2 1
+1 2 3
+1 4 0
+2 5 8
+2 3 2
+4 5 1
+4 7 8
+5 7 9
+5 6 6
+5 3 2
+6 3 7
+6 7 12
+
+4 4
+0 n
+1 n
+2 n
+3 n
+0 1 1
+0 2 5
+1 3 1
+2 3 1
+
+0------1
+
+2------3
+
+6 12
+0 node
+1 node
+2 node
+3 node
+4 node
+5 node
+4 5 5 
+3 5 9
+0 2 1
+0 1 1
+0 5 4
+2 4 2
+1 4 1
+1 5 7
+2 3 6
+3 4 1
+0 3 1
+0 4 3
+
+Piazza Test Cases:
+7 14
+b1 breaker
+j1 box
+s1 switch
+l1 light
+s2 switch
+l2 light
+o1 outlet
+b1 j1 18
+o1 b1 20
+s1 b1 1
+s2 b1 1
+s1 s2 3
+j1 s1 2
+s2 o1 3
+j1 l1 1
+l1 s1 100
+l1 l2 2
+s1 l2 5
+s2 l1 6
+s2 l2 100
+l2 o1 1
+
+Should be 240
+
+11 14
+b1 breaker
+j1 box
+j2 box
+j3 box
+o1 outlet
+o2 outlet
+s1 switch
+l1 light
+s2 switch
+l2 light
+l3 light
+b1 j1 13
+j1 s1 13
+s1 l1 10
+s1 j2 9
+j1 j2 11
+j1 o1 4
+b1 o2 2
+o2 o1 25
+o2 s2 25
+s2 o1 7
+o2 j3 15
+j3 s2 13
+s2 l2 5
+l2 l3 6
+
+(should be 82)
+
+9 36
+b1 breaker
+o1 outlet
+j1 box
+s1 switch
+s2 switch
+l1 light
+l3 light
+s3 switch
+l2 light
+b1 o1 1
+b1 j1 2
+b1 s1 3
+b1 s2 3
+b1 s3 3
+b1 l1 1
+b1 l2 2
+b1 l3 2
+o1 j1 1
+o1 s1 4
+o1 s2 4
+o1 s3 4
+o1 l1 6
+o1 l2 4
+o1 l3 2
+j1 s1 1
+j1 s2 4
+j1 s3 4
+j1 l1 1
+j1 l2 1
+j1 l3 1
+s1 s2 1
+s1 s3 5
+s1 l1 3
+s1 l2 2
+s1 l3 8
+s2 s3 10
+s2 l1 20
+s2 l2 1
+s2 l3 4
+s3 l1 6
+s3 l2 1
+s3 l3 1
+l1 l2 11
+l1 l3 13
+l2 l3 9
+
+(should be 27)
+
+6 8
+b1 breaker
+j1 box
+s1 switch
+l1 light
+l2 light
+o1 outlet
+b1 j1 5
+b1 o1 6
+j1 s1 1
+j1 o1 2
+o1 l1 1
+l1 l2 2
+s1 l1 6
+s1 l2 1
+
+(should be 11)
+
+10 14
+b1 breaker
+o1 outlet
+o2 outlet
+j1 box
+s1 switch
+l1 light
+l2 light
+l3 light
+s2 switch
+l4 light
+b1 o1 1
+b1 j1 3
+o1 o2 2
+j1 o2 4
+o2 s1 4
+j1 s1 1
+j1 s2 8
+s1 s2 1
+s1 l1 2
+s1 l3 1
+l1 l2 4
+l3 l2 3
+s2 l4 6
+l4 l3 1
+
+(should be 27 i think)
+
+Complete Graph:
+6 16
+b1 breaker
+j1 box
+s1 switch
+l1 light
+l2 light
+o1 outlet
+b1 j1 5
+b1 o1 1
+b1 s1 3
+b1 l2 2
+b1 l1 2
+j1 s1 1
+j1 o1 2
+j1 l1 4
+j1 l2 5
+o1 l1 1
+o1 l1 3
+o1 s1 2
+o1 l2 3
+l1 l2 2
+s1 l1 6
+s1 l2 1

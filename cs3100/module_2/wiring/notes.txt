@@ -1,0 +1,16 @@
+"""
+Make sure lights are connected to right switches 
+Wiring class
+Node-Edge class
+Node class 
+
+compareTo function 
+    Breaker, Outlets, Junctions - before switches
+    The switch, light 
+    Looks at all of these and determines what you can and can't do connection wise
+
+PQ - indirect heap for runtime things 
+
+
+
+"""

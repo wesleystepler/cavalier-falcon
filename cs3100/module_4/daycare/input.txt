@@ -1,0 +1,49 @@
+Possible Greedy choices:
+Old capacity of the room with the max difference between old and new - didn't work
+If new-old for a room is greater than the max old capacity, use old from new-old. Else, use max old
+
+Some test cases
+Sample case:
+4
+6 6
+1 7
+3 5
+3 5
+4
+2 2
+3 3
+5 1
+5 10
+
+Expected output:
+1
+5
+
+All rooms growing
+4
+3 4
+2 6
+7 8
+1 2
+
+Expected output: 7?
+
+All rooms shrinking:
+4
+4 3
+2 1
+5 2
+6 1
+
+Only one room
+1
+1 6
+
+
+
+
+
+12 11
+5 4
+4 2
+3 1

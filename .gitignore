@@ -1,6 +1,13 @@
 .vscode
 *.log
+*.exe
+*.ilk
+*.obj
+*.pdb
 Card_Games/Go_Fish/__pycache__
 Card_Games/Poker/__pycache__
 Card_Games/debug.log
 Card_Games/Poker/__pycache__
+cs3100/SampleProgAssignment
+__pycache__
+scratch.py
