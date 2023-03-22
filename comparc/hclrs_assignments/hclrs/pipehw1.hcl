@@ -16,6 +16,7 @@ register fD {
 register dE {
 	icode:4 = NOP;
 	valA:64 = 0;
+	valB:64 = 0;
 	valC:64 = 0;
 	dstE:4 = REG_NONE;
 	Stat:3 = STAT_AOK; 
@@ -84,12 +85,26 @@ reg_srcA = [
 ];
 
 reg_srcB = [
+	d_icode in { RRMOVQ } : D_rB;
 	1: REG_NONE;
 ];
 
 d_valA = [
-	(reg_dstE == reg_srcA) && reg_dstE != REG_NONE : reg_inputE;
+	(m_dstE == reg_srcA) && m_dstE != REG_NONE : m_valE;
+	(m_dstE == reg_srcB) && m_dstE != REG_NONE : m_valE;
+
+	(e_dstE == reg_srcA) && e_dstE != REG_NONE : e_valE;
+	(e_dstE == reg_srcB) && e_dstE != REG_NONE : e_valE;
 	1 : reg_outputA;
+];
+
+d_valB = [
+	(m_dstE == reg_srcA) && m_dstE != REG_NONE : m_valE;
+	(m_dstE == reg_srcB) && m_dstE != REG_NONE : m_valE;
+
+	(e_dstE == reg_srcA) && e_dstE != REG_NONE : e_valE;
+	(e_dstE == reg_srcB) && e_dstE != REG_NONE : e_valE;
+	1 : reg_outputB;
 ];
 
 d_dstE = [
@@ -115,6 +130,7 @@ m_valE = M_valE;
 m_valM = M_valA;
 m_Stat = M_Stat;
 m_dstE = M_dstE;
+
 
 
 
