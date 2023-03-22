@@ -78,7 +78,7 @@ reg_dstE = W_dstE;
 reg_inputE = [ # unlike book, we handle the "forwarding" actions (something + 0) here
 	W_icode == RRMOVQ : W_valA;
 	W_icode in {IRMOVQ} : W_valC;
-        1: 0xBADBADBAD;
+    1: 0xBADBADBAD;
 ];
 
 ########## PC update ########

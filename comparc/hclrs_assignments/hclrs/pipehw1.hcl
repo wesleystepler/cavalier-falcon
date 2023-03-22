@@ -6,6 +6,8 @@ register fF { pc:64 = 0; }
 # Fetch-Decode Pipeline Registers
 register fD {
 	icode:4 = NOP;
+	rA:4 = REG_NONE;
+	rB:4 = REG_NONE;
 	valC:64 = 0;
 	Stat:3 = STAT_AOK;
 }
@@ -23,7 +25,6 @@ register dE {
 register eM {
 	icode:4 = NOP;
 	valA:64 = 0;
-	valC:64 = 0;
 	valE:64 = 0;
 	dstE:4 = REG_NONE;
 	Stat:3 = STAT_AOK;
@@ -33,6 +34,7 @@ register eM {
 register mW {
 	icode:4 = NOP;
 	valE:64 = 0;
+	valM:64 = 0;
 	dstE:4 = REG_NONE;
 	Stat:3 = STAT_AOK;
 }
@@ -40,11 +42,10 @@ register mW {
 ########## Fetch #############
 pc = F_pc;
 
-wire rA:4, rB:4;
 f_icode = i10bytes[4..8];
 #f_ifun = i10bytes[0..4];
-rA = i10bytes[12..16];
-rB = i10bytes[8..12];
+f_rA = i10bytes[12..16];
+f_rB = i10bytes[8..12];
 
 f_valC = [
 	f_icode in { JXX, CALL } : i10bytes[8..72];
@@ -78,7 +79,7 @@ d_valC = D_valC;
 # source selection
 
 reg_srcA = [
-	d_icode in {RRMOVQ} : rA;
+	d_icode in { RRMOVQ } : D_rA;
 	1 : REG_NONE;
 ];
 
@@ -92,7 +93,7 @@ d_valA = [
 ];
 
 d_dstE = [
-	d_icode in {IRMOVQ, RRMOVQ} : rB;
+	d_icode in {IRMOVQ, RRMOVQ} : D_rB;
 	1 : REG_NONE;
 ];
 
@@ -101,20 +102,19 @@ d_dstE = [
 e_Stat = E_Stat;
 e_icode = E_icode;
 e_valA = E_valA;
-e_valC = E_valC;
 e_dstE = E_dstE;
 
 e_valE = [
-	e_icode in { RMMOVQ, MRMOVQ } : e_valC + reg_outputB;
-	1 : 0;
+	1 : E_valC;
 ];
 
 
 ########## Memory #############
 m_icode = M_icode;
 m_valE = M_valE;
+m_valM = M_valA;
 m_Stat = M_Stat;
-m_dstE = E_dstE;
+m_dstE = M_dstE;
 
 
 
@@ -123,8 +123,8 @@ m_dstE = E_dstE;
 reg_dstE = W_dstE;
 
 reg_inputE = [ # unlike book, we handle the "forwarding" actions (something + 0) here
-	W_icode == RRMOVQ : M_valA;
-	W_icode in {IRMOVQ} : E_valC;
+	W_icode in { IRMOVQ } : W_valE;
+	W_icode in { RRMOVQ } : W_valM;
     1: 0xBADBADBAD;
 ];
 
