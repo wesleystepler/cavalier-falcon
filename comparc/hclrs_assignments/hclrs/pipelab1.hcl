@@ -43,6 +43,7 @@ reg_srcA = [
 	d_icode in {RRMOVQ} : rA;
 	1 : REG_NONE;
 ];
+
 d_valA = [
 	(reg_dstE == reg_srcA) && reg_dstE != REG_NONE : reg_inputE;
 	1 : reg_outputA;

@@ -43,6 +43,7 @@ reg_srcA = [
 	icode in {RRMOVQ, RMMOVQ, OPQ, MRMOVQ, PUSHQ, POPQ } : rA;
 	1 : REG_NONE;
 ];
+
 reg_srcB = [
 	icode in {OPQ, RMMOVQ, MRMOVQ} : rB;
 	icode in { PUSHQ, POPQ, CALL, RET } : 4;
