@@ -47,13 +47,16 @@ wire offset:64;
 offset = [
 	f_icode in { HALT } : 0;
 	f_icode > 0xb : 0;
-	f_icode in { NOP, RET } : 1;
+	f_icode in { NOP } : 1;
 	f_icode in { RRMOVQ, OPQ, PUSHQ, POPQ } : 2;
 	f_icode in { JXX, CALL } : 9;
 	1 : 10;
 ];
 
 f_valP = F_pc + offset;
+
+########## PC update ########
+f_pc = f_valP;
 
 ########## Decode #############
 
@@ -77,10 +80,6 @@ m_Stat_mW = M_Stat_eM;
 
 ########## Writeback #############
 # destination selection
-
-
-########## PC update ########
-f_pc = D_valP;
 
 
 ########## Status update ########
