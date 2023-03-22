@@ -12,3 +12,6 @@ cs3100/SampleProgAssignment
 __pycache__
 scratch.py
 a.out
+testdata
+tools
+y86

@@ -1,0 +1,4 @@
+Running seqhw.hcl tests (all instructions including push/pop/call/ret)
+python3 testing_tool.py test --compare-trace seqhw.hcl testdata/seqhw-stack-tests.txt testdata/seq-stack-traces
+syntax OK
+seqhw.hcl passed all 116 tests.
