@@ -36,8 +36,10 @@ offset = [
 	f_icode in { JXX, CALL } : 9;
 	1 : 10;
 ];
+
 valP = F_pc + offset;
 f_pc = valP;
+
 stall_F = [
 	loadUse: 1;
 	f_Stat == STAT_AOK: 0;
@@ -288,11 +290,7 @@ reg_inputE = [
 	1: 0;
 ];
 
-
-
-
-
-
-
 ########## Status update ########
 Stat = W_Stat
+
+
