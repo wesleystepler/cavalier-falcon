@@ -10,12 +10,12 @@ keep_same = [
 ];
 
 mispredicted = [
-    !MccMet : 1;
+    !m_EccMet && m_icode == JXX: 1;
     1 : 0;
 ];
 
 pc = [
-    mispredicted : E_valP;
+    mispredicted : M_valP;
     1 : F_predPC;
 ];
 
@@ -50,19 +50,22 @@ offset = [
 	1 : 10;
 ];
 
+f_valP = [
+    mispredicted : pc + offset;
+    !e_EccMet && e_icode == JXX: pc;
+    1 : F_predPC + offset;
+];
+
 f_predPC = [
     keep_same : pc;
     f_icode == JXX : f_valC;
     1 : f_valP;
 ];
 
-f_valP = F_predPC + offset;
-
-
 stall_F = [
 	loadUse: 1;
 	f_Stat == STAT_AOK: 0;
-	1: 1;
+	1: 0;
 ];
 
 f_Stat = [ 
@@ -74,7 +77,7 @@ f_Stat = [
 ########## Decode #############
 
 bubble_D = [
-    !EccMet : 1;
+    !e_EccMet && e_icode == JXX : 1;
     1 : loadUse;
 ];
 
@@ -113,8 +116,8 @@ reg_srcA = [
 ];
 
 d_outA = [ 
-	EccMet && E_icode in {IRMOVQ, RRMOVQ, OPQ, MRMOVQ} && E_rB == reg_srcA: e_valE;
-	MccMet && M_icode in {IRMOVQ, RRMOVQ, OPQ, MRMOVQ} && M_rB == reg_srcA: M_valE;
+	e_EccMet && E_icode in {IRMOVQ, RRMOVQ, OPQ, MRMOVQ} && E_rB == reg_srcA: e_valE;
+	m_EccMet && M_icode in {IRMOVQ, RRMOVQ, OPQ, MRMOVQ} && M_rB == reg_srcA: M_valE;
 	WccMet && W_icode in {IRMOVQ, RRMOVQ, OPQ, MRMOVQ} && W_rB == reg_srcA: reg_inputE;
 	M_icode == MRMOVQ && M_rA == reg_srcA: m_memOut;
 	W_icode == MRMOVQ && W_rA == reg_srcA: W_memOut;
@@ -127,8 +130,8 @@ reg_srcB = [
 ];
 
 d_outB = [
-	EccMet && E_icode in {IRMOVQ, RRMOVQ, OPQ} && E_rB == reg_srcB: e_valE;
-	MccMet && M_icode in {IRMOVQ, RRMOVQ, OPQ} && M_rB == reg_srcB: M_valE;
+	e_EccMet && E_icode in {IRMOVQ, RRMOVQ, OPQ} && E_rB == reg_srcB: e_valE;
+	m_EccMet && M_icode in {IRMOVQ, RRMOVQ, OPQ} && M_rB == reg_srcB: M_valE;
 	WccMet && W_icode in {IRMOVQ, RRMOVQ, OPQ} && W_rB == reg_srcB: reg_inputE;
 	M_icode == MRMOVQ && M_rA == reg_srcB: m_memOut;
 	W_icode == MRMOVQ && W_rA == reg_srcB: W_memOut;
@@ -139,7 +142,7 @@ d_outB = [
 ########## Execute #############
 
 bubble_E = [
-    !EccMet : 1;
+    !e_EccMet && e_icode == JXX : 1;
     1 : loadUse;
 ];
 
@@ -155,6 +158,7 @@ register eM {
 	valE: 64 = 0;
     valP:64 = 0;
 	Stat: 3 = 0;
+    EccMet:1 = 0;
 
 	SF:1 = 0;
     ZF:1 = 0;
@@ -180,7 +184,7 @@ e_valE = [
 	e_icode == OPQ && e_ifun == ANDQ: e_outB & e_outA;
 	e_icode == OPQ && e_ifun == XORQ: e_outB ^ e_outA;
 	e_icode in {RRMOVQ}: e_outA;
-	e_icode in {IRMOVQ}: e_valC;
+	e_icode in {IRMOVQ}: E_valC;
 	e_icode in {RMMOVQ, MRMOVQ}: e_valC + e_outB;
 	1:0
 ];
@@ -207,8 +211,7 @@ e_SF = c_SF;
      1 : C_SF;
  ];
 
-wire EccMet: 1;
-EccMet = [
+e_EccMet = [
 	
 	E_ifun == ALWAYS: 1;
 	E_ifun == LE: (c_SF || c_ZF);
@@ -233,7 +236,9 @@ register mW {
 	rB: 4 = REG_NONE; 
 	valC: 64 = 0;
 	valE: 64 = 0;
+    valP:64 = 0;
 	Stat: 3 = 0;
+    EccMet:1 = 0;
 
 	SF:1 = 0;
     ZF:1 = 0;
@@ -247,24 +252,12 @@ m_rA = M_rA;
 m_rB = M_rB;
 m_valC = M_valC;
 m_valE = M_valE;
+m_valP = M_valP;
 m_Stat = M_Stat;
+m_EccMet = M_EccMet;
 
 m_ZF = M_ZF;
 m_SF = M_SF;
-
-wire MccMet: 1;
-MccMet = [
-	
-	M_ifun == ALWAYS: 1;
-	M_ifun == LE: (M_SF || M_ZF)  ;
-	M_ifun == LT: (M_SF && !M_ZF);
-	W_ifun == EQ: M_ZF ;
-	M_ifun == NE: !M_ZF ;
-	M_ifun == GE: (!M_SF || M_ZF) ;
-	M_ifun == GT: (!M_SF && !M_ZF);
-	1: 0;
-];
-
 
 mem_addr = [
 	1: m_valE;
@@ -289,25 +282,13 @@ mem_input =  [
 ];  
 
 
-               
-
 ########## Writeback #############
 
 
 # destination selection
 
 wire WccMet: 1;
-WccMet = [
-	
-	W_ifun == ALWAYS: 1;
-	W_ifun == LE: (W_SF || W_ZF)  ;
-	W_ifun == LT: (W_SF && !W_ZF);
-	W_ifun == EQ: W_ZF ;
-	W_ifun == NE: !W_ZF ;
-	W_ifun == GE: (!W_SF || W_ZF) ;
-	W_ifun == GT: (!W_SF && !W_ZF);
-	1: 0;
-];
+WccMet = W_EccMet;
 
 reg_dstE = [
 	W_icode in {IRMOVQ, OPQ}: W_rB;
