@@ -1,11 +1,23 @@
-# Collaborated with Dagim Tekle (ddt8ee)
-
 ########## the PC and condition codes registers #############
-register fF { pc:64 = 0; }
+register fF { predPC:64 = 0; }
 
 
 ########## Fetch #############
-pc = F_pc;
+wire keep_same:1, mispredicted:1;
+keep_same = [
+    f_icode in {HALT} : 1;
+    1 : 0;
+];
+
+mispredicted = [
+    !MccMet : 1;
+    1 : 0;
+];
+
+pc = [
+    mispredicted : E_valP;
+    1 : F_predPC;
+];
 
 register fD {
 	icode: 4 = NOP;
@@ -14,6 +26,7 @@ register fD {
 	rB: 4 = REG_NONE; 
 	valC: 64 = 0;
 	Stat: 3 = 0;
+    valP:64 = 0;
 }
 
 
@@ -29,7 +42,7 @@ f_valC = [
 ];
 
 
-wire offset:64, valP:64;
+wire offset:64;
 offset = [
 	f_icode in { HALT, NOP, RET } : 1;
 	f_icode in { RRMOVQ, OPQ, PUSHQ, POPQ } : 2;
@@ -37,8 +50,14 @@ offset = [
 	1 : 10;
 ];
 
-valP = F_pc + offset;
-f_pc = valP;
+f_predPC = [
+    keep_same : pc;
+    f_icode == JXX : f_valC;
+    1 : f_valP;
+];
+
+f_valP = F_predPC + offset;
+
 
 stall_F = [
 	loadUse: 1;
@@ -53,6 +72,11 @@ f_Stat = [
 ];
 
 ########## Decode #############
+
+bubble_D = [
+    !EccMet : 1;
+    1 : loadUse;
+];
 
 # source selection
 
@@ -71,6 +95,7 @@ register dE {
 	rA: 4 = REG_NONE;
 	rB: 4 = REG_NONE; 
 	valC: 64 = 0;
+    valP:64 = 0;
 	Stat: 3 = 0;
 
 }
@@ -80,6 +105,7 @@ d_ifun = D_ifun;
 d_rA = D_rA;
 d_rB = D_rB;
 d_valC = D_valC;
+d_valP = D_valP;
 d_Stat = D_Stat;
 
 reg_srcA = [
@@ -112,7 +138,10 @@ d_outB = [
 
 ########## Execute #############
 
-bubble_E = loadUse;
+bubble_E = [
+    !EccMet : 1;
+    1 : loadUse;
+];
 
 register eM {
 
@@ -124,6 +153,7 @@ register eM {
 	rB: 4 = REG_NONE; 
 	valC: 64 = 0;
 	valE: 64 = 0;
+    valP:64 = 0;
 	Stat: 3 = 0;
 
 	SF:1 = 0;
@@ -135,6 +165,7 @@ e_ifun = E_ifun;
 e_rA = E_rA;
 e_rB = E_rB;
 e_valC = E_valC;
+e_valP = E_valP;
 e_Stat = E_Stat;
 e_outA = [
 	1: E_outA;
