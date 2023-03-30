@@ -24,6 +24,7 @@ register fD {
 	ifun: 4 = 0;
 	rA: 4 = REG_NONE;
 	rB: 4 = REG_NONE; 
+	rsp:4 = REG_NONE;
 	valC: 64 = 0;
 	Stat: 3 = 0;
     valP:64 = 0;
@@ -34,6 +35,11 @@ f_icode = i10bytes[4..8];
 f_ifun = i10bytes[0..4];
 f_rA = i10bytes[12..16];
 f_rB = i10bytes[8..12];
+
+f_rsp = [
+	f_icode in {PUSHQ, POPQ, CALL, RET} : 4;
+	1: REG_NONE;
+];
 
 
 f_valC = [
@@ -97,6 +103,7 @@ register dE {
 	ifun: 4 = 0;
 	rA: 4 = REG_NONE;
 	rB: 4 = REG_NONE; 
+	rsp:4 = REG_NONE;
 	valC: 64 = 0;
     valP:64 = 0;
 	Stat: 3 = 0;
@@ -107,12 +114,14 @@ d_icode = D_icode;
 d_ifun = D_ifun;
 d_rA = D_rA;
 d_rB = D_rB;
+d_rsp = D_rsp;
 d_valC = D_valC;
 d_valP = D_valP;
 d_Stat = D_Stat;
 
 reg_srcA = [
-	1 : d_rA;
+	d_icode in {RRMOVQ, RMMOVQ, OPQ, MRMOVQ, PUSHQ, POPQ } : d_rA;
+	1 : REG_NONE;
 ];
 
 d_outA = [ 
@@ -126,6 +135,7 @@ d_outA = [
 
 
 reg_srcB = [
+	d_icode in { PUSHQ, POPQ, CALL, RET } : d_rsp;
 	1:d_rB;
 ];
 
@@ -154,6 +164,7 @@ register eM {
 	ifun: 4 = 0;
 	rA: 4 = REG_NONE;
 	rB: 4 = REG_NONE; 
+	rsp:4 = REG_NONE;
 	valC: 64 = 0;
 	valE: 64 = 0;
     valP:64 = 0;
@@ -168,6 +179,7 @@ e_icode = E_icode;
 e_ifun = E_ifun;
 e_rA = E_rA;
 e_rB = E_rB;
+e_rsp = E_rsp;
 e_valC = E_valC;
 e_valP = E_valP;
 e_Stat = E_Stat;
@@ -186,6 +198,8 @@ e_valE = [
 	e_icode in {RRMOVQ}: e_outA;
 	e_icode in {IRMOVQ}: E_valC;
 	e_icode in {RMMOVQ, MRMOVQ}: e_valC + e_outB;
+	e_icode in { PUSHQ, CALL } : e_outB - 0x8;
+	e_icode in { POPQ, RET } : e_outB + 0x8;
 	1:0
 ];
 
@@ -234,6 +248,7 @@ register mW {
 	ifun: 4 = 0;
 	rA: 4 = REG_NONE;
 	rB: 4 = REG_NONE; 
+	rsp:4 = REG_NONE;
 	valC: 64 = 0;
 	valE: 64 = 0;
     valP:64 = 0;
@@ -250,6 +265,7 @@ m_icode = M_icode;
 m_ifun = M_ifun;
 m_rA = M_rA;
 m_rB = M_rB;
+m_rsp = M_rsp;
 m_valC = M_valC;
 m_valE = M_valE;
 m_valP = M_valP;
@@ -260,22 +276,19 @@ m_ZF = M_ZF;
 m_SF = M_SF;
 
 mem_addr = [
+	m_icode in {POPQ, RET} : m_outB;
 	1: m_valE;
 ]; 
 
-mem_readbit = [
-	m_icode == MRMOVQ: 1;
-	1:0;
-];
+mem_readbit = m_icode in {MRMOVQ, POPQ, RET};
+
 m_memOut = [
 	W_icode == RMMOVQ && m_rA == W_rA: W_outA;
 	1:mem_output;
 ];
 
-mem_writebit = [
-	m_icode == RMMOVQ: 1;
-	1:0;
-];
+mem_writebit = m_icode in { RMMOVQ, PUSHQ, CALL};
+
 mem_input =  [
 	W_icode == MRMOVQ && m_rA == W_rA: W_memOut;
 	1: m_outA;
@@ -294,13 +307,24 @@ reg_dstE = [
 	W_icode in {IRMOVQ, OPQ}: W_rB;
 	W_icode == RRMOVQ && WccMet: W_rB;
 	W_icode == MRMOVQ: W_rA;
+	W_icode in { PUSHQ, POPQ, CALL, RET } : W_rsp;
 	1: REG_NONE;
 ];
 reg_inputE = [
-	W_icode in {IRMOVQ, RRMOVQ, OPQ}: W_valE;
+	W_icode in {IRMOVQ, RRMOVQ, OPQ, PUSHQ, POPQ, CALL, RET}: W_valE;
 	W_icode == MRMOVQ: W_memOut;
 	1: 0;
 ];
 
+reg_dstM = [
+	W_icode in {POPQ} : W_rA;
+	1 : REG_NONE;
+];
+
+reg_inputM = [
+	W_icode in { POPQ } : W_memOut;
+	1 : 0xbadbadbadbad;
+];
+
 ########## Status update ########
-Stat = W_Stat
+Stat = W_Stat;
