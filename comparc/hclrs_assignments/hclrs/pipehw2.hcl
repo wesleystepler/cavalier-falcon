@@ -3,6 +3,14 @@ register fF { predPC:64 = 0; }
 
 
 ########## Fetch #############
+
+bubble_F = [
+	d_icode in {RET} : 1;
+	e_icode in {RET} : 1;
+	m_icode in {RET} : 1;
+	1 : 0;
+];
+
 wire keep_same:1, mispredicted:1;
 keep_same = [
     f_icode in {HALT} : 1;
@@ -16,6 +24,7 @@ mispredicted = [
 
 pc = [
     mispredicted : M_valP;
+	W_icode in {RET} : W_valE;
     1 : F_predPC;
 ];
 
@@ -64,7 +73,8 @@ f_valP = [
 
 f_predPC = [
     keep_same : pc;
-    f_icode == JXX : f_valC;
+    f_icode in {JXX} : f_valC;
+	f_icode in {CALL} : f_valC;
     1 : f_valP;
 ];
 
@@ -84,6 +94,8 @@ f_Stat = [
 
 bubble_D = [
     !e_EccMet && e_icode == JXX : 1;
+	e_icode in {RET} : 1;
+	m_icode in {RET} : 1;
     1 : loadUse;
 ];
 
@@ -136,6 +148,7 @@ d_outA = [
 
 reg_srcB = [
 	d_icode in { PUSHQ, POPQ, CALL, RET } : d_rsp;
+
 	1:d_rB;
 ];
 
@@ -153,6 +166,7 @@ d_outB = [
 
 bubble_E = [
     !e_EccMet && e_icode == JXX : 1;
+	m_icode in {RET} : 1;
     1 : loadUse;
 ];
 
@@ -275,22 +289,23 @@ m_EccMet = M_EccMet;
 m_ZF = M_ZF;
 m_SF = M_SF;
 
+mem_readbit = m_icode in {MRMOVQ, POPQ, RET};
+mem_writebit = m_icode in { RMMOVQ, PUSHQ, CALL};
+
 mem_addr = [
 	m_icode in {POPQ, RET} : m_outB;
 	1: m_valE;
 ]; 
 
-mem_readbit = m_icode in {MRMOVQ, POPQ, RET};
-
 m_memOut = [
-	W_icode == RMMOVQ && m_rA == W_rA: W_outA;
+	m_icode == RMMOVQ && m_rA == W_rA: W_outA;
 	1:mem_output;
 ];
 
-mem_writebit = m_icode in { RMMOVQ, PUSHQ, CALL};
 
 mem_input =  [
-	W_icode == MRMOVQ && m_rA == W_rA: W_memOut;
+	m_icode == MRMOVQ && m_rA == W_rA: W_memOut;
+	m_icode in { CALL } : m_valP;
 	1: m_outA;
 ];  
 
