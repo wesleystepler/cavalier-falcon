@@ -293,7 +293,7 @@ mem_readbit = m_icode in {MRMOVQ, POPQ, RET};
 mem_writebit = m_icode in { RMMOVQ, PUSHQ, CALL};
 
 mem_addr = [
-	m_icode in {POPQ, RET} : m_outB;
+	m_icode in {POPQ, RET} && W_icode != POPQ : m_outB;
 	1: m_valE;
 ]; 
 
