@@ -46,7 +46,8 @@ def count_time_in(args, fh):
     # stalling for forwarding
     stall = 0
 
-
+    # List to keep track of previous branch instructions
+    prev_instr = {}
 
     for instruction in csv_reader:
         # account for hazards from two consecutive instructions
@@ -76,10 +77,34 @@ def count_time_in(args, fh):
         #
         # "instruction['branch_taken']" represents the actual outcome of the branch, not
         # its prediction. (The actual branch prediction is not recorded in our traces.)
-        if instruction['is_conditional_branch'] == 'Y' and not args.predict:
+        #if instruction['is_conditional_branch'] == 'Y' and instruction['branch_taken'] == 'Y':
+        #    prev_instr[instruction['orig_pc']] = 'Y'  
+        
+        if instruction['is_conditional_branch'] == 'Y' and args.pred_hist:
+            prediction = ''
+            if instruction['orig_pc'] not in prev_instr.keys():
+                prediction = 'Y'
+                prev_instr[instruction['orig_pc']] = 'Y'
+            else:
+                prediction = prev_instr[instruction['orig_pc']]
+                    
+            if prediction == 'Y' and instruction['branch_taken'] == 'N':
+                prev_instr[instruction['orig_pc']] = 'N'
+                branch_delay += args.branch_delay
+
+            elif prediction == 'N' and instruction['branch_taken'] == 'Y':
+                prev_instr[instruction['orig_pc']] = 'Y'
+                branch_delay += args.branch_delay
+
+        elif instruction['is_conditional_branch'] == 'Y' and not args.predict:
             branch_delay += 2
+            
+            
         elif instruction['is_conditional_branch'] == 'Y' and instruction['branch_taken'] == 'N':
             branch_delay += args.branch_delay
+            prev_instr[instruction['orig_pc']] = 'N'
+
+
         last_instruction = instruction
         num_instructions += 1
 
@@ -105,6 +130,8 @@ def main():
 
     parser.add_argument('--branch-delay', default=2, type=int, help='branch misprediction penalty (AKA branch delay) in cycles')
     parser.add_argument('--disable-predict', action='store_false', dest='predict', help='disable branch prediction')
+    parser.add_argument('--predict-history', action='store_true', dest='pred_hist', help='Enables branch prediction based on past branch instructions')
+
     args = parser.parse_args()
     result = count_time_in(args, args.input)
     print("Total cycles", result['cycles'])
