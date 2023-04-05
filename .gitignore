@@ -4,6 +4,8 @@
 *.ilk
 *.obj
 *.pdb
+*.csv
+*.tar.xz
 Card_Games/Go_Fish/__pycache__
 Card_Games/Poker/__pycache__
 Card_Games/debug.log
