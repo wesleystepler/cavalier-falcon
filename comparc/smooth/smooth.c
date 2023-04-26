@@ -158,10 +158,177 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                 current_pixel.alpha = (unsigned short) (pixel_elements[3]/9);
                 dst[RIDX(i, j, dim)] = current_pixel;
             }
+
+            //Brace yourself, this is gonna be gross
+            else if ((i == 0 && j == 0) || (i == dim-1 && j == 0) || (i == 0 && j == dim-1) || (i == dim-1 && j == dim-1)){
+                pixel_sum sum;
+                pixel current_pixel;
+                initialize_pixel_sum(&sum);
+                if (i == 0 && j == 0) {
+                    
+                    //accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    sum.red += (int) src[RIDX(i,j,dim)].red;
+                    sum.green += (int) src[RIDX(i,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i+1,j,dim)]);
+                    sum.red += (int) src[RIDX(i+1,j,dim)].red;
+                    sum.green += (int) src[RIDX(i+1,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i+1,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i+1,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i,j+1,dim)]);
+                    sum.red += (int) src[RIDX(i,j+1,dim)].red;
+                    sum.green += (int) src[RIDX(i,j+1,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j+1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j+1,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i+1,j+1,dim)]);
+                    sum.red += (int) src[RIDX(i+1,j+1,dim)].red;
+                    sum.green += (int) src[RIDX(i+1,j+1,dim)].green;
+                    sum.blue += (int) src[RIDX(i+1,j+1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i+1,j+1,dim)].alpha;
+                    sum.num++;
+                }
+
+                else if (i == dim-1 && j == 0) {
+                    //accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    sum.red += (int) src[RIDX(i,j,dim)].red;
+                    sum.green += (int) src[RIDX(i,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i-1,j,dim)]);
+                    sum.red += (int) src[RIDX(i-1,j,dim)].red;
+                    sum.green += (int) src[RIDX(i-1,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i-1,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i-1,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i,j+1,dim)]);
+                    sum.red += (int) src[RIDX(i,j+1,dim)].red;
+                    sum.green += (int) src[RIDX(i,j+1,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j+1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j+1,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i-1,j+1,dim)]);
+                    sum.red += (int) src[RIDX(i-1,j+1,dim)].red;
+                    sum.green += (int) src[RIDX(i-1,j+1,dim)].green;
+                    sum.blue += (int) src[RIDX(i-1,j+1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i-1,j+1,dim)].alpha;
+                    sum.num++;
+                }
+
+                else if (i == 0 && j == dim-1) {
+                    //accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    sum.red += (int) src[RIDX(i,j,dim)].red;
+                    sum.green += (int) src[RIDX(i,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i+1,j,dim)]);
+                    sum.red += (int) src[RIDX(i+1,j,dim)].red;
+                    sum.green += (int) src[RIDX(i+1,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i+1,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i+1,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i,j-1,dim)]);
+                    sum.red += (int) src[RIDX(i,j-1,dim)].red;
+                    sum.green += (int) src[RIDX(i,j-1,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j-1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j-1,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i+1,j-1,dim)]);
+                    sum.red += (int) src[RIDX(i+1,j-1,dim)].red;
+                    sum.green += (int) src[RIDX(i+1,j-1,dim)].green;
+                    sum.blue += (int) src[RIDX(i+1,j-1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i+1,j-1,dim)].alpha;
+                    sum.num++;
+                }
+
+                else {
+                    //accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    sum.red += (int) src[RIDX(i,j,dim)].red;
+                    sum.green += (int) src[RIDX(i,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i-1,j,dim)]);
+                    sum.red += (int) src[RIDX(i-1,j,dim)].red;
+                    sum.green += (int) src[RIDX(i-1,j,dim)].green;
+                    sum.blue += (int) src[RIDX(i-1,j,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i-1,j,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i,j-1,dim)]);
+                    sum.red += (int) src[RIDX(i,j-1,dim)].red;
+                    sum.green += (int) src[RIDX(i,j-1,dim)].green;
+                    sum.blue += (int) src[RIDX(i,j-1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i,j-1,dim)].alpha;
+                    sum.num++;
+                    //accumulate_sum(&sum, src[RIDX(i-1,j-1,dim)]);
+                    sum.red += (int) src[RIDX(i-1,j-1,dim)].red;
+                    sum.green += (int) src[RIDX(i-1,j-1,dim)].green;
+                    sum.blue += (int) src[RIDX(i-1,j-1,dim)].blue;
+                    sum.alpha += (int) src[RIDX(i-1,j-1,dim)].alpha;
+                    sum.num++;
+                }
+
+                current_pixel.red = (unsigned short) (sum.red/4);
+                current_pixel.green = (unsigned short) (sum.green/4);
+                current_pixel.blue = (unsigned short) (sum.blue/4);
+                current_pixel.alpha = (unsigned short) (sum.alpha/4);
+                dst[RIDX(i, j, dim)] = current_pixel;
+            }
+
             else {
                 dst[RIDX(i,j, dim)] = avg(dim, i, j, src);
+                /*pixel_sum sum;
+                pixel current_pixel;
+                initialize_pixel_sum(&sum);
+                if (i == 0 && (j > 0 && j < dim-1)) {
+                    accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i,j+1,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i,j-1,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i+1,j,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i+1,j+1,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i+1,j-1,dim)]);  
+                }
+
+                else if (i == dim-1 && (j > 0 && j < dim-1)) {
+                    accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i,j+1,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i,j-1,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i-1,j,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i-1,j+1,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i-1,j-1,dim)]);   
+                }
+
+                else if (j == 0 && (i > 0 && i < dim-1)) {
+                    //sus
+                    accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i+1,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i-1,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i,j+1,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i+1,j+1,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i-1,j+1,dim)]);
+                }
+
+                else if (j == dim-1 && (i > 0 && i < dim-1)) {
+                    accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i+1,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i-1,j,dim)]);
+                    accumulate_sum(&sum, src[RIDX(i,j-1,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i+1,j-1,dim)]); 
+                    accumulate_sum(&sum, src[RIDX(i-1,j-1,dim)]);
+
+                }*/
+
             }
+
+
+
         }
+
     }
 }
 
