@@ -101,61 +101,66 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                 pixel current_pixel;
 
                 initialize_pixel_sum(&sum);
+                //accumulate_sum(&sum, src[RIDX(i,j,dim)]);
+                sum.red += (int) src[RIDX(i,j,dim)].red;
+                sum.green += (int) src[RIDX(i,j,dim)].green;
+                sum.blue += (int) src[RIDX(i,j,dim)].blue;
+                sum.alpha += (int) src[RIDX(i,j,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i,j+1,dim)]);
+                sum.red += (int) src[RIDX(i,j+1,dim)].red;
+                sum.green += (int) src[RIDX(i,j+1,dim)].green;
+                sum.blue += (int) src[RIDX(i,j+1,dim)].blue;
+                sum.alpha += (int) src[RIDX(i,j+1,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i,j-1,dim)]);
+                sum.red += (int) src[RIDX(i,j-1,dim)].red;
+                sum.green += (int) src[RIDX(i,j-1,dim)].green;
+                sum.blue += (int) src[RIDX(i,j-1,dim)].blue;
+                sum.alpha += (int) src[RIDX(i,j-1,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i+1,j,dim)]);
+                sum.red += (int) src[RIDX(i+1,j,dim)].red;
+                sum.green += (int) src[RIDX(i+1,j,dim)].green;
+                sum.blue += (int) src[RIDX(i+1,j,dim)].blue;
+                sum.alpha += (int) src[RIDX(i+1,j,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i-1,j,dim)]);
+                sum.red += (int) src[RIDX(i-1,j,dim)].red;
+                sum.green += (int) src[RIDX(i-1,j,dim)].green;
+                sum.blue += (int) src[RIDX(i-1,j,dim)].blue;
+                sum.alpha += (int) src[RIDX(i-1,j,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i+1,j-1,dim)]);
+                sum.red += (int) src[RIDX(i+1,j-1,dim)].red;
+                sum.green += (int) src[RIDX(i+1,j-1,dim)].green;
+                sum.blue += (int) src[RIDX(i+1,j-1,dim)].blue;
+                sum.alpha += (int) src[RIDX(i+1,j-1,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i-1,j+1,dim)]);
+                sum.red += (int) src[RIDX(i-1,j+1,dim)].red;
+                sum.green += (int) src[RIDX(i-1,j+1,dim)].green;
+                sum.blue += (int) src[RIDX(i-1,j+1,dim)].blue;
+                sum.alpha += (int) src[RIDX(i-1,j+1,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i+1,j+1,dim)]);
+                sum.red += (int) src[RIDX(i+1,j+1,dim)].red;
+                sum.green += (int) src[RIDX(i+1,j+1,dim)].green;
+                sum.blue += (int) src[RIDX(i+1,j+1,dim)].blue;
+                sum.alpha += (int) src[RIDX(i+1,j+1,dim)].alpha;
+                sum.num++;
+                //accumulate_sum(&sum, src[RIDX(i-1,j-1,dim)]);
+                sum.red += (int) src[RIDX(i-1,j-1,dim)].red;
+                sum.green += (int) src[RIDX(i-1,j-1,dim)].green;
+                sum.blue += (int) src[RIDX(i-1,j-1,dim)].blue;
+                sum.alpha += (int) src[RIDX(i-1,j-1,dim)].alpha;
+                sum.num++;
 
-                // load 128 bits (4 pixels)
-                __m128i pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i, j, dim)]);
-                __m256i pixel1 = _mm256_cvtepu8_epi16(pixel);
-
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i, j+1, dim)]);
-                __m256i pixel2 = _mm256_cvtepu8_epi16(pixel);
-
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i, j-1, dim)]);
-                __m256i pixel3 = _mm256_cvtepu8_epi16(pixel);
-
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i+1, j, dim)]);
-                __m256i pixel4 = _mm256_cvtepu8_epi16(pixel);
-              
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i-1, j, dim)]);
-                __m256i pixel5 = _mm256_cvtepu8_epi16(pixel);
-
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i+1, j-1, dim)]);
-                __m256i pixel6 = _mm256_cvtepu8_epi16(pixel);
-                
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i-1, j+1, dim)]);
-                __m256i pixel7 = _mm256_cvtepu8_epi16(pixel);
-
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i+1, j+1, dim)]);
-                __m256i pixel8 = _mm256_cvtepu8_epi16(pixel);
-
-                // load 128 bits (4 pixels)
-                pixel = _mm_loadu_si128((__m128i*) &src[RIDX(i-1, j-1, dim)]);
-                __m256i pixel9 = _mm256_cvtepu8_epi16(pixel);
-
-                //Add all the pixels together
-                __m256i sum1 = _mm256_add_epi16(pixel1, pixel2);
-                __m256i sum2 = _mm256_add_epi16(sum1, pixel3);
-                __m256i sum3 = _mm256_add_epi16(sum2, pixel4);
-                __m256i sum4 = _mm256_add_epi16(sum3, pixel5);
-                __m256i sum5 = _mm256_add_epi16(sum4, pixel6);
-                __m256i sum6 = _mm256_add_epi16(sum5, pixel7);
-                __m256i sum7 = _mm256_add_epi16(sum6, pixel8);
-                __m256i sum8 = _mm256_add_epi16(sum7, pixel9);
-
-                unsigned short pixel_elements[16];
-                _mm256_storeu_si256((__m256i*) pixel_elements, sum8);
-
-
-                current_pixel.red = (unsigned short) (pixel_elements[0]/9);
-                current_pixel.green = (unsigned short) (pixel_elements[1]/9);
-                current_pixel.blue = (unsigned short) (pixel_elements[2]/9);
-                current_pixel.alpha = (unsigned short) (pixel_elements[3]/9);
+               
+                current_pixel.red = (unsigned short) (sum.red/9);
+                current_pixel.green = (unsigned short) (sum.green/9);
+                current_pixel.blue = (unsigned short) (sum.blue/9);
+                current_pixel.alpha = (unsigned short) (sum.alpha/9);
                 dst[RIDX(i, j, dim)] = current_pixel;
             }
             else {
@@ -167,6 +172,7 @@ void better_smooth(int dim, pixel *src, pixel *dst)
 
 /* 
  * naive_smooth - The naive baseline version of smooth
+    fewafjewa;fjewal;fjewa748923743892
  */
 char naive_smooth_descr[] = "naive_smooth: Naive baseline implementation";
 void naive_smooth(int dim, pixel *src, pixel *dst) 
