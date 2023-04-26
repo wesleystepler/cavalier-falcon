@@ -99,6 +99,9 @@ void better_smooth(int dim, pixel *src, pixel *dst)
             if (i != 0 && j != 0 && i != dim-1 && j != dim-1) {
                 pixel_sum sum;
                 pixel current_pixel;
+                pixel p2;
+                pixel p3;
+                pixel p4;
 
                 initialize_pixel_sum(&sum);
 
@@ -152,11 +155,40 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                 _mm256_storeu_si256((__m256i*) pixel_elements, sum8);
 
 
+
                 current_pixel.red = (unsigned short) (pixel_elements[0]/9);
                 current_pixel.green = (unsigned short) (pixel_elements[1]/9);
                 current_pixel.blue = (unsigned short) (pixel_elements[2]/9);
                 current_pixel.alpha = (unsigned short) (pixel_elements[3]/9);
                 dst[RIDX(i, j, dim)] = current_pixel;
+
+                p2.red = (unsigned short) (pixel_elements[4]/9);
+                p2.green = (unsigned short) (pixel_elements[5]/9);
+                p2.blue = (unsigned short) (pixel_elements[6]/9);
+                p2.alpha = (unsigned short) (pixel_elements[7]/9);
+                dst[RIDX(i, j+1, dim)] = p2;
+
+                p3.red = (unsigned short) (pixel_elements[8]/9);
+                p3.green = (unsigned short) (pixel_elements[9]/9);
+                p3.blue = (unsigned short) (pixel_elements[10]/9);
+                p3.alpha = (unsigned short) (pixel_elements[11]/9);
+                dst[RIDX(i, j+2, dim)] = p3;
+
+                p4.red = (unsigned short) (pixel_elements[12]/9);
+                p4.green = (unsigned short) (pixel_elements[13]/9);
+                p4.blue = (unsigned short) (pixel_elements[14]/9);
+                p4.alpha = (unsigned short) (pixel_elements[15]/9);
+                dst[RIDX(i, j+3, dim)] = p4;
+
+                /*if (j+1 == dim-1) {
+                    dst[RIDX(i, j, dim)] = current_pixel;
+                    dst[RIDX(i, j+1, dim)] = p2;
+                } else {
+                    dst[RIDX(i, j, dim)] = current_pixel;
+                    dst[RIDX(i, j+1, dim)] = p2;
+                    dst[RIDX(i, j+2, dim)] = p3;
+                    dst[RIDX(i, j+3, dim)] = p4;
+                }*/
             }
 
             //Brace yourself, this is gonna be gross
@@ -281,8 +313,8 @@ void better_smooth(int dim, pixel *src, pixel *dst)
             }
 
             else {
-                dst[RIDX(i,j, dim)] = avg(dim, i, j, src);
-                /*pixel_sum sum;
+                //dst[RIDX(i,j, dim)] = avg(dim, i, j, src);
+                pixel_sum sum;
                 pixel current_pixel;
                 initialize_pixel_sum(&sum);
                 if (i == 0 && (j > 0 && j < dim-1)) {
@@ -293,7 +325,6 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                     accumulate_sum(&sum, src[RIDX(i+1,j+1,dim)]); 
                     accumulate_sum(&sum, src[RIDX(i+1,j-1,dim)]);  
                 }
-
                 else if (i == dim-1 && (j > 0 && j < dim-1)) {
                     accumulate_sum(&sum, src[RIDX(i,j,dim)]);
                     accumulate_sum(&sum, src[RIDX(i,j+1,dim)]);
@@ -302,7 +333,6 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                     accumulate_sum(&sum, src[RIDX(i-1,j+1,dim)]); 
                     accumulate_sum(&sum, src[RIDX(i-1,j-1,dim)]);   
                 }
-
                 else if (j == 0 && (i > 0 && i < dim-1)) {
                     //sus
                     accumulate_sum(&sum, src[RIDX(i,j,dim)]);
@@ -312,7 +342,6 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                     accumulate_sum(&sum, src[RIDX(i+1,j+1,dim)]); 
                     accumulate_sum(&sum, src[RIDX(i-1,j+1,dim)]);
                 }
-
                 else if (j == dim-1 && (i > 0 && i < dim-1)) {
                     accumulate_sum(&sum, src[RIDX(i,j,dim)]);
                     accumulate_sum(&sum, src[RIDX(i+1,j,dim)]);
@@ -320,15 +349,15 @@ void better_smooth(int dim, pixel *src, pixel *dst)
                     accumulate_sum(&sum, src[RIDX(i,j-1,dim)]); 
                     accumulate_sum(&sum, src[RIDX(i+1,j-1,dim)]); 
                     accumulate_sum(&sum, src[RIDX(i-1,j-1,dim)]);
-
-                }*/
-
+                }
+                current_pixel.red = (unsigned short) (sum.red/6);
+                current_pixel.green = (unsigned short) (sum.green/6);
+                current_pixel.blue = (unsigned short) (sum.blue/6);
+                current_pixel.alpha = (unsigned short) (sum.alpha/6);
+                dst[RIDX(i, j, dim)] = current_pixel;
             }
 
-
-
         }
-
     }
 }
 
