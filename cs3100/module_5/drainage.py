@@ -1,3 +1,7 @@
+# Python Program to solve the problem described here: 
+# chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://markfloryan.github.io/dsa2/homeworks/fall2022/05-dynamicprogramming/drainage.pdf
+# Written for CS 3100, Data Structures and Algorithms II, at the University of Virginia
+
 from map import Map
 
 all_paths = []
@@ -56,9 +60,7 @@ def grid_search(grid, i, j, path):
             if grid[i-1][j] < current:
                 grid_search(grid, i-1, j, path)
                 path.pop()
-
-
-
+                
 
 num_cases = int(input())
 for i in range(0, num_cases):
